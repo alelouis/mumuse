@@ -21,14 +21,18 @@ pub mod message {
         pub status: Status,
         pub data: [Data; 2],
     }
-}
 
-// System Common Message   Status Byte      Number of Data Bytes
-// ---------------------   -----------      --------------------
-// MIDI Timing Code            F1                   1
-// Song Position Pointer       F2                   2
-// Song Select                 F3                   1
-// Tune Request                F6                  None
+    impl Default for Midi {
+        fn default() -> Self {
+            Self {
+                channel: 16,
+                stamp: 0,
+                status: Status::Unknown,
+                data: [Data::None, Data::None],
+            }
+        }
+    }
+}
 
 #[derive(Debug)]
 pub enum Status {
@@ -201,52 +205,44 @@ impl message::Raw {
                     data: [Data::Generic(self.data[1]), Data::None],
                 },
                 "6" => message::Midi {
-                    channel: 16,
                     stamp: self.stamp,
                     status: Status::TuneRequest,
-                    data: [Data::None, Data::None],
+                    ..Default::default()
                 },
                 "8" => message::Midi {
-                    channel: 16,
                     stamp: self.stamp,
                     status: Status::TimingClock,
-                    data: [Data::None, Data::None],
+                    ..Default::default()
                 },
                 "a" => message::Midi {
-                    channel: 16,
                     stamp: self.stamp,
                     status: Status::StartSequence,
-                    data: [Data::None, Data::None],
+                    ..Default::default()
                 },
                 "b" => message::Midi {
-                    channel: 16,
                     stamp: self.stamp,
                     status: Status::ContinueSequence,
-                    data: [Data::None, Data::None],
+                    ..Default::default()
                 },
                 "c" => message::Midi {
-                    channel: 16,
                     stamp: self.stamp,
                     status: Status::StopSequence,
-                    data: [Data::None, Data::None],
+                    ..Default::default()
                 },
                 "e" => message::Midi {
-                    channel: 16,
                     stamp: self.stamp,
                     status: Status::ActiveSensing,
-                    data: [Data::None, Data::None],
+                    ..Default::default()
                 },
                 "f" => message::Midi {
-                    channel: 16,
                     stamp: self.stamp,
                     status: Status::SystemReset,
-                    data: [Data::None, Data::None],
+                    ..Default::default()
                 },
                 _ => message::Midi {
-                    channel: 16,
                     stamp: self.stamp,
-                    status: Status::ControlChange,
-                    data: [Data::ResetAllControllers, Data::None],
+                    status: Status::Unknown,
+                    ..Default::default()
                 },
             },
             _ => message::Midi {
