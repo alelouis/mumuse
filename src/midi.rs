@@ -1,4 +1,4 @@
-use crate::messages::message;
+use crate::messages;
 use midir::{MidiInput, MidiInputPort};
 use std::io::stdin;
 
@@ -40,8 +40,8 @@ pub fn receive(name: String) {
             device_port.expect("Couldn't get device from name."),
             "midi_conn",
             move |stamp, message, _| {
-                let raw_message = message::Raw::new(stamp, message[0], message[1..].to_vec());
-                let parsed: message::Midi = raw_message.parse();
+                let raw_message = messages::Raw::new(stamp, message[0], message[1..].to_vec());
+                let parsed: messages::Midi = raw_message.parse();
                 println!("{}", parsed);
             },
             (),
