@@ -48,6 +48,13 @@ pub enum Data {
     PressureValue(u8),
     MSB(u8),
     LSB(u8),
+    ResetAllControllers,
+    LocalControl(u8),
+    AllNotesOff,
+    OmniModeOff,
+    OmniModeOn,
+    MonoModeOn,
+    PolyModeOn,
     None,
 }
 
@@ -86,14 +93,58 @@ impl message::Raw {
                     Data::PressureAmount(self.data[1]),
                 ],
             },
-            "b" => message::Midi {
-                channel: u8::from_str_radix(&status_hex[1..], 16).unwrap(),
-                stamp: self.stamp,
-                status: Status::ControlChange,
-                data: [
-                    Data::ControllerNumber(self.data[0]),
-                    Data::ControllerValue(self.data[1]),
-                ],
+            "b" => match &encode_hex(&[self.data[1]])[..] {
+                "79" => message::Midi {
+                    channel: 16,
+                    stamp: self.stamp,
+                    status: Status::ControlChange,
+                    data: [Data::ResetAllControllers, Data::None],
+                },
+                "7a" => message::Midi {
+                    channel: 16,
+                    stamp: self.stamp,
+                    status: Status::ControlChange,
+                    data: [Data::LocalControl(self.data[2]), Data::None],
+                },
+                "7b" => message::Midi {
+                    channel: 16,
+                    stamp: self.stamp,
+                    status: Status::ControlChange,
+                    data: [Data::AllNotesOff, Data::None],
+                },
+                "7c" => message::Midi {
+                    channel: 16,
+                    stamp: self.stamp,
+                    status: Status::ControlChange,
+                    data: [Data::OmniModeOff, Data::None],
+                },
+                "7d" => message::Midi {
+                    channel: 16,
+                    stamp: self.stamp,
+                    status: Status::ControlChange,
+                    data: [Data::OmniModeOn, Data::None],
+                },
+                "7e" => message::Midi {
+                    channel: 16,
+                    stamp: self.stamp,
+                    status: Status::ControlChange,
+                    data: [Data::MonoModeOn, Data::None],
+                },
+                "7f" => message::Midi {
+                    channel: 16,
+                    stamp: self.stamp,
+                    status: Status::ControlChange,
+                    data: [Data::PolyModeOn, Data::None],
+                },
+                _ => message::Midi {
+                    channel: u8::from_str_radix(&status_hex[1..], 16).unwrap(),
+                    stamp: self.stamp,
+                    status: Status::ControlChange,
+                    data: [
+                        Data::ControllerNumber(self.data[0]),
+                        Data::ControllerValue(self.data[1]),
+                    ],
+                },
             },
             "c" => message::Midi {
                 channel: u8::from_str_radix(&status_hex[1..], 16).unwrap(),
