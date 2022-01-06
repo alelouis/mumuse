@@ -1,8 +1,8 @@
+use crate::messages::message;
 use midir::{MidiInput, MidiInputPort};
 use std::io::stdin;
-use crate::messages::message;
 
-// Lists available input port devices 
+// Lists available input port devices
 pub fn show_input_ports() {
     let midi_in = MidiInput::new("midi_in").expect("Could not open midi input.");
     for p in midi_in.ports().iter() {
@@ -10,7 +10,7 @@ pub fn show_input_ports() {
     }
 }
 
-// Finds port for a given string name 
+// Finds port for a given string name
 fn get_port_index_by_name(midi_in: &MidiInput, name: String) -> Option<usize> {
     let mut port_index: Option<usize> = None;
     for (i, p) in midi_in.ports().iter().enumerate() {
@@ -22,7 +22,7 @@ fn get_port_index_by_name(midi_in: &MidiInput, name: String) -> Option<usize> {
     port_index
 }
 
-// Midi stream receive and parse 
+// Midi stream receive and parse
 pub fn receive(name: String) {
     let mut input = String::new();
     let midi_in = MidiInput::new("midi_in").expect("Could not open midi input.");
@@ -35,12 +35,18 @@ pub fn receive(name: String) {
     };
 
     // Opening connection with input midi device
-    let _conn_in = midi_in.connect(device_port.expect("Couldn't get device from name."), "midi_conn", 
-        move |stamp, message, _| {
-            let raw_message = message::Raw::new(stamp, message[0], message[1..].to_vec());
-            let parsed: message::Midi = raw_message.parse();
-            println!("{:?}", parsed);
-        }, ()).unwrap();
+    let _conn_in = midi_in
+        .connect(
+            device_port.expect("Couldn't get device from name."),
+            "midi_conn",
+            move |stamp, message, _| {
+                let raw_message = message::Raw::new(stamp, message[0], message[1..].to_vec());
+                let parsed: message::Midi = raw_message.parse();
+                println!("{:?}", parsed);
+            },
+            (),
+        )
+        .unwrap();
 
     println!("Press any key to terminate.");
     input.clear();
