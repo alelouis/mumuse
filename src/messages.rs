@@ -4,6 +4,8 @@ use crate::conversions::encode_hex;
 pub mod message {
     use super::Data;
     use super::Status;
+    use std::fmt;
+    use colored::Colorize;
 
     // Raw message contains bytes values
     #[derive(Debug)]
@@ -30,6 +32,16 @@ pub mod message {
                 status: Status::Unknown,
                 data: [Data::None, Data::None],
             }
+        }
+    }
+
+    impl fmt::Display for Midi {
+        fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+            let stamp = format!("{:?}", self.stamp).green();
+            let status = format!("{:?}", self.status).blue();
+            let data = format!("{:?}", self.data).red();
+            let channel = format!("{:?}", self.channel).yellow();
+            write!(f, "Ti: {} | Ch: {:2} | St: {:15} | Da: {}", stamp, channel, status, data)
         }
     }
 }

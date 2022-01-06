@@ -42,7 +42,7 @@ pub fn receive(name: String) {
             move |stamp, message, _| {
                 let raw_message = message::Raw::new(stamp, message[0], message[1..].to_vec());
                 let parsed: message::Midi = raw_message.parse();
-                println!("{:?}", parsed);
+                println!("{}", parsed);
             },
             (),
         )
