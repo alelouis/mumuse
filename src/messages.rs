@@ -6,6 +6,7 @@ pub mod message {
     use super::Status;
     use std::fmt;
     use colored::Colorize;
+    use crate::music::*;
 
     // Raw message contains bytes values
     #[derive(Debug)]
@@ -41,11 +42,31 @@ pub mod message {
             let status = format!("{:?}", self.status).blue();
             let data = format!("{:?}", self.data).red();
             let channel = format!("{:?}", self.channel).yellow();
-            write!(f, "Ti: {} | Ch: {:2} | St: {:15} | Da: {}", stamp, channel, status, data)
+            let note = self.get_midi_note();
+            match note {
+                Some(note) => {
+                    let note = format!("{}", note).purple();
+                    write!(f, "Ti: {} | Ch: {:2} | St: {:15} | No : {} | Da: {}", stamp, channel, status, note, data)
+                },
+                _ => write!(f, "Ti: {} | Ch: {:2} | St: {:15} | Da: {}", stamp, channel, status, data)
+            }
+            
         }
+    }
+
+    impl Midi {
+
+        // Get Note struct from Midi message
+        pub fn get_midi_note(&self) -> Option<Note> {
+            match &self.status {
+                Status::NoteOn | Status::NoteOff => Note::from_key_number(&self.data[0]),
+                _ => None,
+            }
+        } 
     }
 }
 
+// Status is determined by first byte of midi frame
 #[derive(Debug)]
 pub enum Status {
     NoteOff,               // 8x
@@ -92,6 +113,7 @@ pub enum Data {
 }
 
 impl message::Raw {
+    
     // Constructor for Raw message
     pub fn new(stamp: u64, status: u8, data: Vec<u8>) -> message::Raw {
         message::Raw {
