@@ -71,7 +71,7 @@ impl Note {
             _ => None
         };
         match letter {
-            Some(l) => Some(Note { letter: l, octave: octave_str.parse::<u8>().unwrap()}),
+            Some(l) => Some(Note::new(l, octave_str.parse::<u8>().unwrap())),
             None => None
         }
     }

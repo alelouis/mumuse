@@ -1,3 +1,5 @@
+use std::vec;
+
 use crate::messages;
 use crate::music::{Chord, Note, Letter};
 use crate::music;
@@ -84,7 +86,53 @@ fn chord_from_str() {
 
 #[test]
 fn chord_transition() {
-    let cmaj = Chord::from_str(vec!["C0", "E0", "G0"]);
-    let fmaj = Chord::from_str(vec!["F0", "A0", "C1"]);
-    assert_eq!(cmaj.notes.len(), 3);
+    let from = Chord::from_str(vec!["C4", "E4", "G4"]);
+    let target = Chord::from_str(vec!["G4", "C5", "Eb5"]);
+    let mut dist_vec: Vec<Vec<Vec<u8>>> = vec![];
+
+    for note in &from.notes {
+        let mut note_vec: Vec<Vec<u8>> = vec![];
+        for other_note in &target.notes {
+            let mut octave_vec: Vec<u8> = vec![];
+            for octave in other_note.octave-1..=other_note.octave+1 {
+                let swipe_note = Note::new(other_note.letter, octave);
+                octave_vec.push(note.dist_to(&swipe_note));
+            }
+            note_vec.push(octave_vec);
+        }
+        dist_vec.push(note_vec);
+    }
+
+    let first: Vec<usize> = (0..from.notes.len()).collect();
+    let mut max: u32 = 100;
+    let mut voice_lead: Option<Chord> = None;
+
+    for f in &first {
+        let mut second = first.clone();
+        second.remove(second.iter().position(|x| *x == *f).unwrap());
+        for s in &second {
+            let mut third = second.clone();
+            third.remove(third.iter().position(|x| *x == *s).unwrap());
+            for t in &third {
+                for i in 0..3 {
+                    for j in 0..3 {
+                        for k in 0..3 {
+                            let sum: u32 = (dist_vec[0][*f][i] + dist_vec[1][*s][j] + dist_vec[2][*t][k]).try_into().unwrap();
+                            if sum < max {
+                                max = sum;
+                                let note1 = Note::new(target.notes[*f].letter, target.notes[*f].octave + i as u8 - 1);
+                                let note2 = Note::new(target.notes[*s].letter, target.notes[*s].octave + j as u8 - 1);
+                                let note3 = Note::new(target.notes[*t].letter, target.notes[*t].octave + k as u8 - 1);
+                                voice_lead = Some(Chord::new(vec![note1, note2, note3]));
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    println!("{:?}", dist_vec);
+    println!("{:?}", max);
+    println!("{:?}", voice_lead);
 }
