@@ -13,7 +13,7 @@ pub const KEYBOARD: [Letter; 12] = [
     Letter::Ab,
     Letter::A,
     Letter::Bb,
-    Letter::B
+    Letter::B,
 ];
 
 // Note abstraction with letter and octave
@@ -52,27 +52,27 @@ impl Note {
         Note { letter, octave }
     }
 
-    pub fn from_str(s : &str) -> Option<Self> {
-        let letter_str: &str = &s[0..s.len()-1];
-        let octave_str: &str = &s[s.len()-1..];
+    pub fn from_str(s: &str) -> Option<Self> {
+        let letter_str: &str = &s[0..s.len() - 1];
+        let octave_str: &str = &s[s.len() - 1..];
         let letter: Option<Letter> = match letter_str {
-            "C"  => Some(Letter::C),
+            "C" => Some(Letter::C),
             "Db" => Some(Letter::Db),
-            "D"  => Some(Letter::D),
+            "D" => Some(Letter::D),
             "Eb" => Some(Letter::Eb),
-            "E"  => Some(Letter::E),
-            "F"  => Some(Letter::F),
+            "E" => Some(Letter::E),
+            "F" => Some(Letter::F),
             "Gb" => Some(Letter::Gb),
-            "G"  => Some(Letter::G),
+            "G" => Some(Letter::G),
             "Ab" => Some(Letter::Ab),
-            "A"  => Some(Letter::A),
+            "A" => Some(Letter::A),
             "Bb" => Some(Letter::Bb),
-            "B"  => Some(Letter::B),
-            _ => None
+            "B" => Some(Letter::B),
+            _ => None,
         };
         match letter {
             Some(l) => Some(Note::new(l, octave_str.parse::<u8>().unwrap())),
-            None => None
+            None => None,
         }
     }
 
@@ -94,7 +94,10 @@ impl Note {
         let octave_difference: i8 = self.octave as i8 - other.octave as i8;
         let self_index: i8 = KEYBOARD.iter().position(|&x| x == self.letter).unwrap() as i8;
         let other_index: i8 = KEYBOARD.iter().position(|&x| x == other.letter).unwrap() as i8;
-        (self_index - other_index + octave_difference * 12).abs().try_into().unwrap()
+        (self_index - other_index + octave_difference * 12)
+            .abs()
+            .try_into()
+            .unwrap()
     }
 }
 
@@ -110,6 +113,11 @@ impl Chord {
     }
 
     pub fn from_str(notes: Vec<&str>) -> Self {
-        Chord::new(notes.iter().map(|note| Note::from_str(note).unwrap()).collect())
+        Chord::new(
+            notes
+                .iter()
+                .map(|note| Note::from_str(note).unwrap())
+                .collect(),
+        )
     }
 }

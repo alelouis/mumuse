@@ -8,3 +8,4 @@ edition = "2021"
 [dependencies]
 midir = "0.7.0"
 colored = "2"
+itertools = "0.10.3"
