@@ -2,9 +2,6 @@ use crate::messages::Data;
 use std::fmt;
 
 pub const KEYBOARD: [Letter; 12] = [
-    Letter::A,
-    Letter::Bb,
-    Letter::B,
     Letter::C,
     Letter::Db,
     Letter::D,
@@ -14,6 +11,9 @@ pub const KEYBOARD: [Letter; 12] = [
     Letter::Gb,
     Letter::G,
     Letter::Ab,
+    Letter::A,
+    Letter::Bb,
+    Letter::B
 ];
 
 // Note abstraction with letter and octave
@@ -63,9 +63,10 @@ impl Note {
 
     // Compute distance in semitones between two notes
     pub fn dist_to(&self, other: &Note) -> u8 {
+        let octave_difference: i8 = self.octave as i8 - other.octave as i8;
         let self_index: i8 = KEYBOARD.iter().position(|&x| x == self.letter).unwrap() as i8;
         let other_index: i8 = KEYBOARD.iter().position(|&x| x == other.letter).unwrap() as i8;
-        (self_index - other_index).abs().try_into().unwrap()
+        (self_index - other_index + octave_difference * 12).abs().try_into().unwrap()
     }
 }
 
