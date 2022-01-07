@@ -48,6 +48,34 @@ pub enum Letter {
 
 impl Note {
     // Find letter and octave from midi key number (Data::KeyNumber)
+    pub fn new(letter: Letter, octave: u8) -> Self {
+        Note { letter, octave }
+    }
+
+    pub fn from_str(s : &str) -> Option<Self> {
+        let letter_str: &str = &s[0..s.len()-1];
+        let octave_str: &str = &s[s.len()-1..];
+        let letter: Option<Letter> = match letter_str {
+            "C"  => Some(Letter::C),
+            "Db" => Some(Letter::Db),
+            "D"  => Some(Letter::D),
+            "Eb" => Some(Letter::Eb),
+            "E"  => Some(Letter::E),
+            "F"  => Some(Letter::F),
+            "Gb" => Some(Letter::Gb),
+            "G"  => Some(Letter::G),
+            "Ab" => Some(Letter::Ab),
+            "A"  => Some(Letter::A),
+            "Bb" => Some(Letter::Bb),
+            "B"  => Some(Letter::B),
+            _ => None
+        };
+        match letter {
+            Some(l) => Some(Note { letter: l, octave: octave_str.parse::<u8>().unwrap()}),
+            None => None
+        }
+    }
+
     pub fn from_key_number(kn: &Data) -> Option<Self> {
         match kn {
             Data::KeyNumber(x) => {
