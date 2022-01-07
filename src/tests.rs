@@ -93,6 +93,6 @@ fn chord_transition() {
     let target = Chord::from_str(vec!["E4", "G4", "B4", "D5"]);
     let voiceleaded = from.voicelead_to(&target).unwrap();
     assert_eq!(voiceleaded.notes.len(), target.notes.len());
-    println!("{:?}", target);
-    println!("{:?}", voiceleaded);
+    println!("{}", target);
+    println!("{}", voiceleaded);
 }

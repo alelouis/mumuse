@@ -170,3 +170,16 @@ impl Chord {
         voice_lead
         }
 }
+
+impl fmt::Display for Chord {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        let mut notes: String = "".to_string();
+        for (i, note) in (&self.notes).iter().enumerate() {
+            notes += &format!("{}", note).to_string();
+            if i != self.notes.len()-1 {
+                notes += ","
+            }
+        }
+        write!(f, "Chord({})", notes)
+    }
+}
