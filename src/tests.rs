@@ -57,7 +57,7 @@ fn distance_between_notes() {
 }
 
 #[test]
-fn create_chord() {
+fn chord_from_struct() {
     let note_1 = Note {
         letter: Letter::C,
         octave: 0,
@@ -74,12 +74,17 @@ fn create_chord() {
     assert_eq!(chord.notes.len(), 3);
 }
 
+#[test]
+fn chord_from_str() {
+    let chord = Chord::from_str(vec!["C0", "E1", "G2"]);
+    assert_eq!(chord.notes[0].letter, Letter::C);
+    assert_eq!(chord.notes[1].letter, Letter::E);
+    assert_eq!(chord.notes[2].letter, Letter::G);
+}
 
 #[test]
 fn chord_transition() {
-    let note_1 = Note::from_str("A0").unwrap();
-    let note_2 = Note::from_str("E0").unwrap();
-    let note_3 = Note::from_str("G0").unwrap();
-    let chord = Chord::new(vec![note_1, note_2, note_3]); 
-    assert_eq!(chord.notes.len(), 3);
+    let cmaj = Chord::from_str(vec!["C0", "E0", "G0"]);
+    let fmaj = Chord::from_str(vec!["F0", "A0", "C1"]);
+    assert_eq!(cmaj.notes.len(), 3);
 }

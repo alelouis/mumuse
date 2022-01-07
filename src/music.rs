@@ -108,4 +108,8 @@ impl Chord {
     pub fn new(notes: Vec<Note>) -> Self {
         Chord { notes }
     }
+
+    pub fn from_str(notes: Vec<&str>) -> Self {
+        Chord::new(notes.iter().map(|note| Note::from_str(note).unwrap()).collect())
+    }
 }
