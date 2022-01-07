@@ -1,17 +1,26 @@
 use crate::messages;
-use midir::{MidiInput, MidiInputPort};
+use midir::{MidiInput, MidiOutput, MidiOutputPort, MidiInputPort, MidiIO};
 use std::io::stdin;
+use std::thread::sleep;
+use std::time::Duration;
 
 // Lists available input port devices
 pub fn show_input_ports() {
     let midi_in = MidiInput::new("midi_in").expect("Could not open midi input.");
-    for p in midi_in.ports().iter() {
-        println!("{}", midi_in.port_name(&p).unwrap());
+    for (i, p) in midi_in.ports().iter().enumerate() {
+        println!("in ({}) : {}", i, midi_in.port_name(&p).unwrap());
+    }
+}
+
+pub fn show_output_ports() {
+    let midi_out = MidiOutput::new("midi_out").expect("Could not open midi input.");
+    for (i, p) in midi_out.ports().iter().enumerate() {
+        println!("out ({}) : {}", i, midi_out.port_name(&p).unwrap());
     }
 }
 
 // Finds port for a given string name
-fn get_port_index_by_name(midi_in: &MidiInput, name: String) -> Option<usize> {
+fn get_port_index_by_name<T: MidiIO>(midi_in: &T, name: String) -> Option<usize> {
     let mut port_index: Option<usize> = None;
     for (i, p) in midi_in.ports().iter().enumerate() {
         if midi_in.port_name(&p).unwrap().eq(&name) {
@@ -21,6 +30,47 @@ fn get_port_index_by_name(midi_in: &MidiInput, name: String) -> Option<usize> {
     }
     port_index
 }
+
+// Midi stream send
+pub fn send(port: String) {
+    let midi_out = MidiOutput::new("midi_out").expect("Could not open midi output.");
+    let input_ports = midi_out.ports();
+
+    // Getting input device port
+    let device_port: Option<&MidiOutputPort> = match get_port_index_by_name(&midi_out, port) {
+        Some(i) => input_ports.get(i),
+        None => None,
+    };
+
+    // Opening connection with input midi device
+    let mut conn_out = midi_out.connect(device_port.unwrap(), "midir-test").unwrap();
+    println!("Connection open. Listen!");
+    {
+        // Define a new scope in which the closure `play_note` borrows conn_out, so it can be called easily
+        let mut play_note = |note: u8, duration: u64| {
+            const NOTE_ON_MSG: u8 = 0x90;
+            const NOTE_OFF_MSG: u8 = 0x80;
+            const VELOCITY: u8 = 0xFF;
+            // We're ignoring errors in here
+            let _ = conn_out.send(&[NOTE_ON_MSG, note, VELOCITY]);
+            sleep(Duration::from_millis(duration * 150));
+            let _ = conn_out.send(&[NOTE_OFF_MSG, note, VELOCITY]);
+        };
+
+        sleep(Duration::from_millis(4 * 150));
+        
+        play_note(66, 4);
+        play_note(65, 3);
+        play_note(63, 1);
+        play_note(61, 6);
+        play_note(59, 2);
+        play_note(58, 4);
+        play_note(56, 4);
+        play_note(54, 4);
+    }
+    sleep(Duration::from_millis(150));
+}
+
 
 // Midi stream receive and parse
 pub fn receive(name: String) {
