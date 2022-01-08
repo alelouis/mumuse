@@ -1,7 +1,7 @@
 # mumuse
 
-Small midi parser and music theory library written in Rust *(wip)*.
-
+Small midi parser and music theory library written in Rust *(wip)*.  
+Scroll documentation : [**doc.rs/mumuse**](https://docs.rs/mumuse/0.1.0/mumuse/)
 ```rust 
 fn main() {
     midi::show_input_ports();
