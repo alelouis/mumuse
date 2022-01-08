@@ -90,6 +90,11 @@ impl Note {
         }
     }
 
+    pub fn to_key_number(&self) -> u8 {
+        let p = KEYBOARD.iter().position(|&n| n == self.letter).unwrap() as u8;
+        12 + p + self.octave * 12
+    }
+
     // Compute distance in semitones between two notes
     pub fn dist_to(&self, other: &Note) -> u8 {
         let octave_difference: i8 = self.octave as i8 - other.octave as i8;

@@ -1,9 +1,22 @@
 use crate::messages;
-use midir::{MidiInput, MidiOutput, MidiOutputPort, MidiInputPort, MidiIO};
+use midir::{MidiInput, MidiOutput, MidiOutputPort, MidiInputPort, MidiIO, MidiOutputConnection};
 use std::io::stdin;
 use std::thread::sleep;
 use std::time::Duration;
+use crate::music::*;
 
+// Trait for sending Music struct to Midi
+pub trait Send {
+    fn send_midi(&self, conn_out: &mut MidiOutputConnection, duration: u64, velocity: u8);
+}
+
+impl Send for Note {
+    fn send_midi(&self, conn_out: &mut MidiOutputConnection, duration: u64, velocity: u8) {
+        let _ = conn_out.send(&[0x90, self.to_key_number(), velocity]);
+        sleep(Duration::from_millis(duration));
+        let _ = conn_out.send(&[0x80, self.to_key_number(), velocity]);
+    }
+}
 // Lists available input port devices
 pub fn show_input_ports() {
     let midi_in = MidiInput::new("midi_in").expect("Could not open midi input.");
@@ -45,29 +58,15 @@ pub fn send(port: String) {
     // Opening connection with input midi device
     let mut conn_out = midi_out.connect(device_port.unwrap(), "midir-test").unwrap();
     println!("Connection open. Listen!");
-    {
-        // Define a new scope in which the closure `play_note` borrows conn_out, so it can be called easily
-        let mut play_note = |note: u8, duration: u64| {
-            const NOTE_ON_MSG: u8 = 0x90;
-            const NOTE_OFF_MSG: u8 = 0x80;
-            const VELOCITY: u8 = 0xFF;
-            // We're ignoring errors in here
-            let _ = conn_out.send(&[NOTE_ON_MSG, note, VELOCITY]);
-            sleep(Duration::from_millis(duration * 150));
-            let _ = conn_out.send(&[NOTE_OFF_MSG, note, VELOCITY]);
-        };
+    Note::from_str("A3").unwrap().send_midi(&mut conn_out, 100, 127);
+    Note::from_str("B3").unwrap().send_midi(&mut conn_out, 100, 127);
+    Note::from_str("C4").unwrap().send_midi(&mut conn_out, 100, 127);
+    Note::from_str("D4").unwrap().send_midi(&mut conn_out, 100, 127);
+    Note::from_str("E4").unwrap().send_midi(&mut conn_out, 100, 127);
+    Note::from_str("F4").unwrap().send_midi(&mut conn_out, 100, 127);
+    Note::from_str("G4").unwrap().send_midi(&mut conn_out, 100, 127);
+    Note::from_str("A4").unwrap().send_midi(&mut conn_out, 100, 127);
 
-        sleep(Duration::from_millis(4 * 150));
-        
-        play_note(66, 4);
-        play_note(65, 3);
-        play_note(63, 1);
-        play_note(61, 6);
-        play_note(59, 2);
-        play_note(58, 4);
-        play_note(56, 4);
-        play_note(54, 4);
-    }
     sleep(Duration::from_millis(150));
 }
 
