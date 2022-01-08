@@ -3,7 +3,7 @@ name = "mumuse"
 version = "0.1.0"
 edition = "2021"
 description = "Small midi parser and music theory library written in Rust"
-license = "GNU General Public License v3.0"
+license = "GPL-3.0-only"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
