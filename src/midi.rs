@@ -1,3 +1,5 @@
+//! Midi send and receive helpers
+
 use crate::messages;
 use midir::{MidiInput, MidiOutput, MidiOutputPort, MidiInputPort, MidiIO, MidiOutputConnection};
 use std::io::stdin;
@@ -7,12 +9,12 @@ use crate::music::note::Note;
 use crate::music::chord::Chord;
 use crate::messages::{Status};
 
-// Trait for sending Music struct to Midi
-pub trait Send {
+/// Trait for sending Music struct to Midi
+pub trait MidiSend {
     fn send_midi(&self, conn_out: &mut MidiOutputConnection, duration: u64, velocity: u8);
 }
 
-impl Send for Note {
+impl MidiSend for Note {
     fn send_midi(&self, conn_out: &mut MidiOutputConnection, duration: u64, velocity: u8) {
         let _ = conn_out.send(&[Status::NoteOn as u8, self.to_key_number(), velocity]);
         sleep(Duration::from_millis(duration));
@@ -20,7 +22,7 @@ impl Send for Note {
     }
 }
 
-impl Send for Chord {
+impl MidiSend for Chord {
     fn send_midi(&self, conn_out: &mut MidiOutputConnection, duration: u64, velocity: u8) {
         for note in &self.notes {
             let _ = conn_out.send(&[0x90, note.to_key_number(), velocity]);
@@ -32,7 +34,7 @@ impl Send for Chord {
     }
 }
 
-// Lists available input port devices
+/// Lists available input port devices
 pub fn show_input_ports() {
     let midi_in = MidiInput::new("midi_in").expect("Could not open midi input.");
     for (i, p) in midi_in.ports().iter().enumerate() {
@@ -40,7 +42,7 @@ pub fn show_input_ports() {
     }
 }
 
-// Lists available output port devices
+/// Lists available output port devices
 pub fn show_output_ports() {
     let midi_out = MidiOutput::new("midi_out").expect("Could not open midi input.");
     for (i, p) in midi_out.ports().iter().enumerate() {
@@ -48,7 +50,7 @@ pub fn show_output_ports() {
     }
 }
 
-// Finds port for a given string name
+/// Finds port for a given string name
 fn get_port_index_by_name<T: MidiIO>(midi_in: &T, name: String) -> Option<usize> {
     let mut port_index: Option<usize> = None;
     for (i, p) in midi_in.ports().iter().enumerate() {
@@ -60,7 +62,7 @@ fn get_port_index_by_name<T: MidiIO>(midi_in: &T, name: String) -> Option<usize>
     port_index
 }
 
-// Midi stream send
+/// Midi stream send
 pub fn send(port: String) {
     let midi_out = MidiOutput::new("midi_out").expect("Could not open midi output.");
     let input_ports = midi_out.ports();
@@ -82,7 +84,7 @@ pub fn send(port: String) {
     Chord::from_str(vec!["C4", "E4", "G4", "B4"]).send_midi(&mut conn_out, 500, 127);
 }
 
-// Midi stream receive and parse
+/// Midi stream receive and parse
 pub fn receive(name: String) {
     let mut input = String::new();
     let midi_in = MidiInput::new("midi_in").expect("Could not open midi input.");

@@ -1,11 +1,11 @@
-use crate::conversions::encode_hex;
+//! Raw midi parsing and display
 
-// module containing Raw and Midi structs
+use crate::conversions::encode_hex;
 use crate::music::note::Note;
 use colored::Colorize;
 use std::fmt;
 
-// Raw message contains bytes values
+/// Raw message contains bytes values
 #[derive(Debug)]
 pub struct Raw {
     stamp: u64,
@@ -189,7 +189,7 @@ impl Raw {
     }
 }
 
-// Midi message contains custom type events
+/// Midi message contains custom type events
 #[derive(Debug)]
 pub struct Midi {
     channel: u8,
@@ -244,7 +244,7 @@ impl Midi {
     }
 }
 
-// Status is determined by first byte of midi frame
+/// Status is determined by first byte of midi frame
 #[derive(Debug)]
 #[allow(dead_code)]
 pub enum Status {
@@ -268,7 +268,7 @@ pub enum Status {
     Unknown,                      // ??
 }
 
-// Midi data, second and optional third bytes
+/// Midi data, second and optional third bytes
 #[derive(Debug)]
 #[allow(dead_code)]
 pub enum Data {

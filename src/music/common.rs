@@ -1,3 +1,6 @@
+//! Common music definitions
+
+/// Twelve tone temperament Keyboard vector of Note
 pub const KEYBOARD: [Letter; 12] = [
     Letter::C,
     Letter::Db,
@@ -13,7 +16,7 @@ pub const KEYBOARD: [Letter; 12] = [
     Letter::B,
 ];
 
-// Name of a note
+/// Letters to describe notes
 #[derive(Debug, PartialEq, Clone, Copy)]
 pub enum Letter {
     A,

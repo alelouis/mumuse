@@ -1,6 +1,6 @@
-# midi-parse
+# mumuse
 
-Small midi parser written in Rust for debug purposes.
+Small midi parser and music theory library written in Rust *(wip)*.
 
 ```rust 
 fn main() {

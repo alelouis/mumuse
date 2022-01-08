@@ -1,8 +1,10 @@
+//! Chord are collections of Notes
+
 use crate::music::note::Note;
 use itertools::Itertools;
 use std::fmt;
 
-// Chord abstraction
+/// Chord is a vector a Notes
 #[derive(Debug)]
 pub struct Chord {
     pub notes: Vec<Note>,
@@ -10,12 +12,12 @@ pub struct Chord {
 
 
 impl Chord {
-    // Construct from Note vector
+    /// Construct from Note vector
     pub fn new(notes: Vec<Note>) -> Self {
         Self { notes }
     }
 
-    // Construct chord from vector str slices
+    /// Construct chord from vector str slices
     pub fn from_str(notes: Vec<&str>) -> Self {
         Self::new(
             notes
@@ -25,7 +27,7 @@ impl Chord {
         )
     }
 
-    // Finds optimal minimum movement chord to target
+    /// Finds optimal minimum movement chord to target
     pub fn voicelead_to(&self, target: &Self) -> Option<Self> {
         let mut dist_vec: Vec<Vec<Vec<u8>>> = vec![];
         let mut max: u32 = 100;
@@ -91,6 +93,7 @@ mod tests {
     use super::*;
     use crate::music::common::Letter;
 
+    /// Chord creation from struct
     #[test]
     fn chord_from_struct() {
         let note_1 = Note {
@@ -109,7 +112,7 @@ mod tests {
         assert_eq!(chord.notes.len(), 3);
     }
     
-    // Chord creation from string
+    /// Chord creation from string
     #[test]
     fn chord_from_str() {
         let chord = Chord::from_str(vec!["C0", "E1", "G2"]);
@@ -118,7 +121,7 @@ mod tests {
         assert_eq!(chord.notes[2].letter, Letter::G);
     }
     
-    // Chord optimal voice leading
+    /// Chord optimal voice leading
     #[test]
     fn chord_transition() {
         let from = Chord::from_str(vec!["C4", "E4", "G4", "B4"]);

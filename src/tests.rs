@@ -1,8 +1,10 @@
+//! Integration tests
+
 use crate::messages;
 use crate::music::common::KEYBOARD;
 use crate::music::note::Note;
 
-// Tests conversion from Midi to Note
+/// Tests conversion from Midi to Note
 #[test]
 fn from_key_number_to_note() {
     for kn in 21..127 {

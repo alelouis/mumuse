@@ -1,9 +1,11 @@
+//! Elementary music entity
+
 use crate::messages::Data;
 use crate::music::common::Letter;
 use crate::music::common::KEYBOARD;
 use std::fmt;
 
-// Note abstraction with letter and octave
+/// Note abstraction with letter and octave
 #[derive(Debug)]
 pub struct Note {
     pub letter: Letter,
@@ -11,11 +13,13 @@ pub struct Note {
 }
 
 impl Note {
-    // Find letter and octave from midi key number (Data::KeyNumber)
+    
+    /// Construct Note from Letter and octave
     pub fn new(letter: Letter, octave: u8) -> Self {
         Note { letter, octave }
     }
 
+    /// Construct Note from &str
     pub fn from_str(s: &str) -> Option<Self> {
         let letter_str: &str = &s[0..s.len() - 1];
         let octave_str: &str = &s[s.len() - 1..];
@@ -40,6 +44,7 @@ impl Note {
         }
     }
 
+    /// Construct Note from midi key number
     pub fn from_key_number(kn: &Data) -> Option<Self> {
         match kn {
             Data::KeyNumber(x) => {
@@ -53,12 +58,13 @@ impl Note {
         }
     }
 
+    /// Convert Note to midi key number
     pub fn to_key_number(&self) -> u8 {
         let p = KEYBOARD.iter().position(|&n| n == self.letter).unwrap() as u8;
         12 + p + self.octave * 12
     }
 
-    // Compute distance in semitones between two notes
+    /// Compute distance in semitones between two notes
     pub fn dist_to(&self, other: &Note) -> u8 {
         let octave_difference: i8 = self.octave as i8 - other.octave as i8;
         let self_index: i8 = KEYBOARD.iter().position(|&x| x == self.letter).unwrap() as i8;
