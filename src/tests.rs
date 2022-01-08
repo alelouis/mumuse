@@ -1,6 +1,8 @@
 use crate::messages;
 use crate::music;
-use crate::music::{Chord, Letter, Note};
+use crate::music::common::{Letter, KEYBOARD};
+use crate::music::chord::Chord;
+use crate::music::note::Note;
 
 // Tests conversion from Midi to Note
 #[test]
@@ -11,7 +13,7 @@ fn from_key_number_to_note() {
             Some(note) => note,
             None => panic!("Oups"),
         };
-        assert_eq!(note.letter, music::KEYBOARD[((kn - 21) % 12) as usize]);
+        assert_eq!(note.letter, KEYBOARD[((kn - 21) % 12) as usize]);
         assert_eq!(note.octave, (kn - 21) / 12);
     }
 }

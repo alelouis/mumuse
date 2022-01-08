@@ -1,7 +1,7 @@
 use crate::conversions::encode_hex;
 
 // module containing Raw and Midi structs
-use crate::music::*;
+use crate::music::note::Note;
 use colored::Colorize;
 use std::fmt;
 

@@ -3,7 +3,8 @@ use midir::{MidiInput, MidiOutput, MidiOutputPort, MidiInputPort, MidiIO, MidiOu
 use std::io::stdin;
 use std::thread::sleep;
 use std::time::Duration;
-use crate::music::*;
+use crate::music::note::Note;
+use crate::music::chord::Chord;
 use crate::messages::{Status};
 
 // Trait for sending Music struct to Midi
