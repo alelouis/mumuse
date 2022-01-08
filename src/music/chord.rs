@@ -84,3 +84,49 @@ impl fmt::Display for Chord {
         write!(f, "Chord({})", notes)
     }
 }
+
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::music::common::Letter;
+
+    #[test]
+    fn chord_from_struct() {
+        let note_1 = Note {
+            letter: Letter::C,
+            octave: 0,
+        };
+        let note_2 = Note {
+            letter: Letter::E,
+            octave: 0,
+        };
+        let note_3 = Note {
+            letter: Letter::G,
+            octave: 0,
+        };
+        let chord = Chord::new(vec![note_1, note_2, note_3]);
+        assert_eq!(chord.notes.len(), 3);
+    }
+    
+    // Chord creation from string
+    #[test]
+    fn chord_from_str() {
+        let chord = Chord::from_str(vec!["C0", "E1", "G2"]);
+        assert_eq!(chord.notes[0].letter, Letter::C);
+        assert_eq!(chord.notes[1].letter, Letter::E);
+        assert_eq!(chord.notes[2].letter, Letter::G);
+    }
+    
+    // Chord optimal voice leading
+    #[test]
+    fn chord_transition() {
+        let from = Chord::from_str(vec!["C4", "E4", "G4", "B4"]);
+        let target = Chord::from_str(vec!["E4", "G4", "B4", "D5"]);
+        let voiceleaded = from.voicelead_to(&target).unwrap();
+        assert_eq!(voiceleaded.notes.len(), target.notes.len());
+        println!("{}", target);
+        println!("{}", voiceleaded);
+    }
+    
+}

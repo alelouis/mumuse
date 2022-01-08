@@ -246,6 +246,7 @@ impl Midi {
 
 // Status is determined by first byte of midi frame
 #[derive(Debug)]
+#[allow(dead_code)]
 pub enum Status {
     NoteOff = 0x80,               // 8x
     NoteOn = 0x90,                // 9x
@@ -269,6 +270,7 @@ pub enum Status {
 
 // Midi data, second and optional third bytes
 #[derive(Debug)]
+#[allow(dead_code)]
 pub enum Data {
     KeyNumber(u8),
     Velocity(u8),
