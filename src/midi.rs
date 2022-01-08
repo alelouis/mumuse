@@ -4,6 +4,7 @@ use std::io::stdin;
 use std::thread::sleep;
 use std::time::Duration;
 use crate::music::*;
+use crate::messages::{Status};
 
 // Trait for sending Music struct to Midi
 pub trait Send {
@@ -12,9 +13,9 @@ pub trait Send {
 
 impl Send for Note {
     fn send_midi(&self, conn_out: &mut MidiOutputConnection, duration: u64, velocity: u8) {
-        let _ = conn_out.send(&[0x90, self.to_key_number(), velocity]);
+        let _ = conn_out.send(&[Status::NoteOn as u8, self.to_key_number(), velocity]);
         sleep(Duration::from_millis(duration));
-        let _ = conn_out.send(&[0x80, self.to_key_number(), velocity]);
+        let _ = conn_out.send(&[Status::NoteOff as u8, self.to_key_number(), velocity]);
     }
 }
 
@@ -38,6 +39,7 @@ pub fn show_input_ports() {
     }
 }
 
+// Lists available output port devices
 pub fn show_output_ports() {
     let midi_out = MidiOutput::new("midi_out").expect("Could not open midi input.");
     for (i, p) in midi_out.ports().iter().enumerate() {
@@ -71,20 +73,13 @@ pub fn send(port: String) {
     // Opening connection with input midi device
     let mut conn_out = midi_out.connect(device_port.unwrap(), "midir-test").unwrap();
     println!("Connection open. Listen!");
-    Note::from_str("A3").unwrap().send_midi(&mut conn_out, 100, 127);
-    Note::from_str("B3").unwrap().send_midi(&mut conn_out, 100, 127);
+
+    // Tests
     Note::from_str("C4").unwrap().send_midi(&mut conn_out, 100, 127);
-    Note::from_str("D4").unwrap().send_midi(&mut conn_out, 100, 127);
     Note::from_str("E4").unwrap().send_midi(&mut conn_out, 100, 127);
-    Note::from_str("F4").unwrap().send_midi(&mut conn_out, 100, 127);
     Note::from_str("G4").unwrap().send_midi(&mut conn_out, 100, 127);
-    Note::from_str("A4").unwrap().send_midi(&mut conn_out, 100, 127);
-
     Chord::from_str(vec!["C4", "E4", "G4", "B4"]).send_midi(&mut conn_out, 500, 127);
-
-    sleep(Duration::from_millis(150));
 }
-
 
 // Midi stream receive and parse
 pub fn receive(name: String) {

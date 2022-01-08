@@ -247,24 +247,24 @@ impl Midi {
 // Status is determined by first byte of midi frame
 #[derive(Debug)]
 pub enum Status {
-    NoteOff,               // 8x
-    NoteOn,                // 9x
-    PolyphonicKeyPressure, // Ax
-    ControlChange,         // Bx
-    ProgramChange,         // Cx
-    ChannelPressure,       // Dx
-    PitchBend,             // Ex
-    MidiTimingCode,        // F1
-    SongPositionPointer,   // F2
-    SongSelect,            // F3
-    TuneRequest,           // F6
-    TimingClock,           // F8
-    StartSequence,         // FA
-    ContinueSequence,      // FB
-    StopSequence,          // FC
-    ActiveSensing,         // FE
-    SystemReset,           // FF
-    Unknown,               // ??
+    NoteOff = 0x80,               // 8x
+    NoteOn = 0x90,                // 9x
+    PolyphonicKeyPressure = 0xA0, // Ax
+    ControlChange = 0xB0,         // Bx
+    ProgramChange = 0xC0,         // Cx
+    ChannelPressure = 0xD0,       // Dx
+    PitchBend = 0xE0,             // Ex
+    MidiTimingCode = 0xF1,        // F1
+    SongPositionPointer = 0xF2,   // F2
+    SongSelect = 0xF3,            // F3
+    TuneRequest = 0xF6,           // F6
+    TimingClock = 0xF8,           // F8
+    StartSequence = 0xFA,         // FA
+    ContinueSequence = 0xFB,      // FB
+    StopSequence = 0xFC,          // FC
+    ActiveSensing = 0xFE,         // FE
+    SystemReset = 0xFF,           // FF
+    Unknown,                      // ??
 }
 
 // Midi data, second and optional third bytes
