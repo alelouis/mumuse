@@ -17,6 +17,19 @@ impl Send for Note {
         let _ = conn_out.send(&[0x80, self.to_key_number(), velocity]);
     }
 }
+
+impl Send for Chord {
+    fn send_midi(&self, conn_out: &mut MidiOutputConnection, duration: u64, velocity: u8) {
+        for note in &self.notes {
+            let _ = conn_out.send(&[0x90, note.to_key_number(), velocity]);
+        }  
+        sleep(Duration::from_millis(duration));
+        for note in &self.notes {
+            let _ = conn_out.send(&[0x80, note.to_key_number(), velocity]);
+        }  
+    }
+}
+
 // Lists available input port devices
 pub fn show_input_ports() {
     let midi_in = MidiInput::new("midi_in").expect("Could not open midi input.");
@@ -66,6 +79,8 @@ pub fn send(port: String) {
     Note::from_str("F4").unwrap().send_midi(&mut conn_out, 100, 127);
     Note::from_str("G4").unwrap().send_midi(&mut conn_out, 100, 127);
     Note::from_str("A4").unwrap().send_midi(&mut conn_out, 100, 127);
+
+    Chord::from_str(vec!["C4", "E4", "G4", "B4"]).send_midi(&mut conn_out, 500, 127);
 
     sleep(Duration::from_millis(150));
 }
