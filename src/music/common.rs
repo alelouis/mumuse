@@ -32,3 +32,20 @@ pub enum Letter {
     G,
     Ab,
 }
+
+/// Letters to describe notes
+#[derive(Debug, PartialEq, Clone, Copy)]
+pub enum Interval {
+    Unison,
+    MinorSecond,
+    MajorSecond,
+    MinorThird,
+    MajorThird,
+    Tritone,
+    Fifth,
+    MinorSixth,
+    MajorSixth,
+    MinorSeventh,
+    MajorSeventh,
+    Octave,
+}

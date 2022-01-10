@@ -2,8 +2,10 @@
 
 use crate::messages::Data;
 use crate::music::common::Letter;
+use crate::music::common::Interval;
 use crate::music::common::KEYBOARD;
 use std::fmt;
+use std::ops;
 
 /// Note abstraction with letter and octave
 #[derive(Debug)]
@@ -82,6 +84,17 @@ impl fmt::Display for Note {
     }
 }
 
+// Overload operator + for Note + Interval 
+impl ops::Add<Interval> for Note {
+    type Output = Note;
+
+    fn add(self, rhs: Interval) -> Note {
+        let self_index: u8 = KEYBOARD.iter().position(|&x| x == self.letter).unwrap() as u8;
+        let target_index: u8 = self_index + rhs as u8;
+        Note::new(KEYBOARD[(target_index%12) as usize], target_index/12 as u8)
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -95,6 +108,22 @@ mod tests {
         let bb = Note::from_str("Bb2").unwrap();
         assert_eq!(bb.letter, Letter::Bb);
         assert_eq!(bb.octave, 2);
+    }
+
+    fn note_add_interval() {
+        assert_eq!((Note::from_str("C0").unwrap() + Interval::Unison).letter, Letter::C);
+        assert_eq!((Note::from_str("C0").unwrap() + Interval::MinorSecond).letter, Letter::Db);
+        assert_eq!((Note::from_str("C0").unwrap() + Interval::MajorSecond).letter, Letter::D);
+        assert_eq!((Note::from_str("C0").unwrap() + Interval::MinorThird).letter, Letter::Eb);
+        assert_eq!((Note::from_str("C0").unwrap() + Interval::MajorThird).letter, Letter::E);
+        assert_eq!((Note::from_str("C0").unwrap() + Interval::Tritone).letter, Letter::F);
+        assert_eq!((Note::from_str("C0").unwrap() + Interval::Fifth).letter, Letter::Gb);
+        assert_eq!((Note::from_str("C0").unwrap() + Interval::MinorSixth).letter, Letter::Ab);
+        assert_eq!((Note::from_str("C0").unwrap() + Interval::MajorSixth).letter, Letter::A);
+        assert_eq!((Note::from_str("C0").unwrap() + Interval::MinorSeventh).letter, Letter::Bb);
+        assert_eq!((Note::from_str("C0").unwrap() + Interval::MajorSeventh).letter, Letter::B);
+        assert_eq!((Note::from_str("C0").unwrap() + Interval::Octave).letter, Letter::C);
+        assert_eq!((Note::from_str("C0").unwrap() + Interval::Octave).octave, 1);
     }
 
     #[test]
