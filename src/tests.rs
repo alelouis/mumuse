@@ -14,6 +14,6 @@ fn from_key_number_to_note() {
             None => panic!("Keynumber invalid."),
         };
         assert_eq!(note.letter, KEYBOARD[((kn - 21) % 12) as usize]);
-        assert_eq!(note.octave, (kn - 21) / 12);
+        assert_eq!(note.octave, (kn as i8 - 21) / 12);
     }
 }

@@ -11,13 +11,13 @@ use std::ops;
 #[derive(Debug, Clone, Copy)]
 pub struct Note {
     pub letter: Letter,
-    pub octave: u8,
+    pub octave: i8,
 }
 
 impl Note {
     
     /// Construct Note from Letter and octave
-    pub fn new(letter: Letter, octave: u8) -> Self {
+    pub fn new(letter: Letter, octave: i8) -> Self {
         Note { letter, octave }
     }
 
@@ -41,7 +41,7 @@ impl Note {
             _ => None,
         };
         match letter {
-            Some(l) => Some(Note::new(l, octave_str.parse::<u8>().unwrap())),
+            Some(l) => Some(Note::new(l, octave_str.parse::<i8>().unwrap())),
             None => None,
         }
     }
@@ -53,7 +53,7 @@ impl Note {
                 let index: usize = ((x - 21) % 12) as usize;
                 Some(Note {
                     letter: KEYBOARD[index],
-                    octave: (x - 21) / 12,
+                    octave: (*x as i8 - 21) / 12,
                 })
             }
             _ => None,
@@ -63,7 +63,7 @@ impl Note {
     /// Convert Note to midi key number
     pub fn to_key_number(&self) -> u8 {
         let p = KEYBOARD.iter().position(|&n| n == self.letter).unwrap() as u8;
-        12 + p + self.octave * 12
+        12 + p + (self.octave as u8) * 12
     }
 
     /// Compute distance in semitones between two notes
@@ -87,11 +87,23 @@ impl fmt::Display for Note {
 // Overload operator + for Note + Interval 
 impl ops::Add<Interval> for Note {
     type Output = Note;
-
     fn add(self, rhs: Interval) -> Note {
         let self_index: u8 = KEYBOARD.iter().position(|&x| x == self.letter).unwrap() as u8;
         let target_index: u8 = self_index + rhs as u8;
-        Note::new(KEYBOARD[(target_index%12) as usize], target_index/12 as u8)
+        Note::new(KEYBOARD[(target_index%12) as usize], (target_index/12) as i8)
+    }
+}
+
+// Overload operator - for Note - Interval 
+impl ops::Sub<Interval> for Note {
+    type Output = Note;
+    fn sub(self, rhs: Interval) -> Note {
+        let self_index: i8 = KEYBOARD.iter().position(|&x| x == self.letter).unwrap() as i8;
+        let mut target_index: i8 = self_index - (rhs as i8);
+        if target_index < 0 {
+            target_index += 12;
+        }
+        Note::new(KEYBOARD[(target_index%12) as usize], self.octave as i8 + (self_index - (rhs as i8))/12)
     }
 }
 
@@ -110,6 +122,7 @@ mod tests {
         assert_eq!(bb.octave, 2);
     }
 
+    #[test]
     fn note_add_interval() {
         let c = Note::from_str("C0").unwrap();
         assert_eq!((c + Interval::Unison).letter, Letter::C);
@@ -117,14 +130,35 @@ mod tests {
         assert_eq!((c + Interval::MajorSecond).letter, Letter::D);
         assert_eq!((c + Interval::MinorThird).letter, Letter::Eb);
         assert_eq!((c + Interval::MajorThird).letter, Letter::E);
-        assert_eq!((c + Interval::Tritone).letter, Letter::F);
-        assert_eq!((c + Interval::Fifth).letter, Letter::Gb);
+        assert_eq!((c + Interval::Fourth).letter, Letter::F);
+        assert_eq!((c + Interval::Tritone).letter, Letter::Gb);
+        assert_eq!((c + Interval::Fifth).letter, Letter::G);
         assert_eq!((c + Interval::MinorSixth).letter, Letter::Ab);
         assert_eq!((c + Interval::MajorSixth).letter, Letter::A);
         assert_eq!((c + Interval::MinorSeventh).letter, Letter::Bb);
         assert_eq!((c + Interval::MajorSeventh).letter, Letter::B);
         assert_eq!((c + Interval::Octave).letter, Letter::C);
         assert_eq!((c + Interval::Octave).octave, 1);
+    }
+
+    #[test]
+    fn note_sub_interval() {
+        let c = Note::from_str("C1").unwrap();
+        assert_eq!((c - Interval::Octave).octave, 0);
+        assert_eq!((c - Interval::Octave).letter, Letter::C);
+        assert_eq!((c - Interval::MajorSeventh).letter, Letter::Db);
+        assert_eq!((c - Interval::MinorSeventh).letter, Letter::D);
+        assert_eq!((c - Interval::MajorSixth).letter, Letter::Eb);
+        assert_eq!((c - Interval::MinorSixth).letter, Letter::E);
+        assert_eq!((c - Interval::Fifth).letter, Letter::F);
+        assert_eq!((c - Interval::Tritone).letter, Letter::Gb);
+        assert_eq!((c - Interval::Fourth).letter, Letter::G);
+        assert_eq!((c - Interval::MajorThird).letter, Letter::Ab);
+        assert_eq!((c - Interval::MinorThird).letter, Letter::A);
+        assert_eq!((c - Interval::MajorSecond).letter, Letter::Bb);
+        assert_eq!((c - Interval::MinorSecond).letter, Letter::B);
+        assert_eq!((c - Interval::Unison).letter, Letter::C);
+        
     }
 
     #[test]

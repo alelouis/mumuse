@@ -63,7 +63,7 @@ impl Chord {
                     for note in 0..chord_len {
                         note_vec.push(Note::new(
                             target.notes[p[note]].letter,
-                            target.notes[p[note]].octave + c[note] as u8 - 1,
+                            target.notes[p[note]].octave + c[note] as i8 - 1,
                         ));
                     }
                     voice_lead = Some(Chord::new(note_vec));

@@ -41,6 +41,7 @@ pub enum Interval {
     MajorSecond,
     MinorThird,
     MajorThird,
+    Fourth,
     Tritone,
     Fifth,
     MinorSixth,
