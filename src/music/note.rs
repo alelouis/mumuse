@@ -8,7 +8,7 @@ use std::fmt;
 use std::ops;
 
 /// Note abstraction with letter and octave
-#[derive(Debug)]
+#[derive(Debug, Clone, Copy)]
 pub struct Note {
     pub letter: Letter,
     pub octave: u8,
@@ -111,19 +111,20 @@ mod tests {
     }
 
     fn note_add_interval() {
-        assert_eq!((Note::from_str("C0").unwrap() + Interval::Unison).letter, Letter::C);
-        assert_eq!((Note::from_str("C0").unwrap() + Interval::MinorSecond).letter, Letter::Db);
-        assert_eq!((Note::from_str("C0").unwrap() + Interval::MajorSecond).letter, Letter::D);
-        assert_eq!((Note::from_str("C0").unwrap() + Interval::MinorThird).letter, Letter::Eb);
-        assert_eq!((Note::from_str("C0").unwrap() + Interval::MajorThird).letter, Letter::E);
-        assert_eq!((Note::from_str("C0").unwrap() + Interval::Tritone).letter, Letter::F);
-        assert_eq!((Note::from_str("C0").unwrap() + Interval::Fifth).letter, Letter::Gb);
-        assert_eq!((Note::from_str("C0").unwrap() + Interval::MinorSixth).letter, Letter::Ab);
-        assert_eq!((Note::from_str("C0").unwrap() + Interval::MajorSixth).letter, Letter::A);
-        assert_eq!((Note::from_str("C0").unwrap() + Interval::MinorSeventh).letter, Letter::Bb);
-        assert_eq!((Note::from_str("C0").unwrap() + Interval::MajorSeventh).letter, Letter::B);
-        assert_eq!((Note::from_str("C0").unwrap() + Interval::Octave).letter, Letter::C);
-        assert_eq!((Note::from_str("C0").unwrap() + Interval::Octave).octave, 1);
+        let c = Note::from_str("C0").unwrap();
+        assert_eq!((c + Interval::Unison).letter, Letter::C);
+        assert_eq!((c + Interval::MinorSecond).letter, Letter::Db);
+        assert_eq!((c + Interval::MajorSecond).letter, Letter::D);
+        assert_eq!((c + Interval::MinorThird).letter, Letter::Eb);
+        assert_eq!((c + Interval::MajorThird).letter, Letter::E);
+        assert_eq!((c + Interval::Tritone).letter, Letter::F);
+        assert_eq!((c + Interval::Fifth).letter, Letter::Gb);
+        assert_eq!((c + Interval::MinorSixth).letter, Letter::Ab);
+        assert_eq!((c + Interval::MajorSixth).letter, Letter::A);
+        assert_eq!((c + Interval::MinorSeventh).letter, Letter::Bb);
+        assert_eq!((c + Interval::MajorSeventh).letter, Letter::B);
+        assert_eq!((c + Interval::Octave).letter, Letter::C);
+        assert_eq!((c + Interval::Octave).octave, 1);
     }
 
     #[test]
