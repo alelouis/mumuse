@@ -1,4 +1,4 @@
-//! Chord are collections of Notes
+//! Collection of Notes
 
 use crate::music::note::Note;
 use itertools::Itertools;
@@ -128,8 +128,6 @@ mod tests {
         let target = Chord::from_str(vec!["E4", "G4", "B4", "D5"]);
         let voiceleaded = from.voicelead_to(&target).unwrap();
         assert_eq!(voiceleaded.notes.len(), target.notes.len());
-        println!("{}", target);
-        println!("{}", voiceleaded);
     }
     
 }

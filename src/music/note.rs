@@ -1,4 +1,4 @@
-//! Elementary music entity
+//! Letter and octave
 
 use crate::messages::Data;
 use crate::music::common::Letter;
@@ -90,7 +90,7 @@ impl ops::Add<Interval> for Note {
     fn add(self, rhs: Interval) -> Note {
         let self_index: u8 = KEYBOARD.iter().position(|&x| x == self.letter).unwrap() as u8;
         let target_index: u8 = self_index + rhs as u8;
-        Note::new(KEYBOARD[(target_index%12) as usize], (target_index/12) as i8)
+        Note::new(KEYBOARD[(target_index%12) as usize], self.octave + (target_index/12) as i8)
     }
 }
 
@@ -103,7 +103,7 @@ impl ops::Sub<Interval> for Note {
         if target_index < 0 {
             target_index += 12;
         }
-        Note::new(KEYBOARD[(target_index%12) as usize], self.octave as i8 + (self_index - (rhs as i8))/12)
+        Note::new(KEYBOARD[(target_index%12) as usize], self.octave + (self_index - (rhs as i8))/12)
     }
 }
 

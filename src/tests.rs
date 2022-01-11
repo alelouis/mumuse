@@ -6,6 +6,7 @@ use crate::music::note::Note;
 
 /// Tests conversion from Midi to Note
 #[test]
+#[cfg(test)]
 fn from_key_number_to_note() {
     for kn in 21..127 {
         let data_kn = messages::Data::KeyNumber(kn);
