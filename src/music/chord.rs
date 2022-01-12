@@ -18,11 +18,10 @@ impl Chord {
 
     /// Construct chord from vector str slices
     pub fn from_str(notes: Vec<&str>) -> Self {
-        Self::new(
-            notes
-                .iter()
-                .filter_map(|note| Note::from_str(note))
-                .collect(),
+        Self::new(notes
+            .iter()
+            .filter_map(|note| Note::from_str(note))
+            .collect(),
         )
     }
 
@@ -70,7 +69,7 @@ impl Chord {
             }
         }
         voice_lead
-    }
+        }
 }
 
 impl fmt::Display for Chord {
@@ -78,13 +77,14 @@ impl fmt::Display for Chord {
         let mut notes: String = "".to_string();
         for (i, note) in (&self.notes).iter().enumerate() {
             notes += &format!("{}", note).to_string();
-            if i != self.notes.len() - 1 {
+            if i != self.notes.len()-1 {
                 notes += ","
             }
         }
         write!(f, "Chord({})", notes)
     }
 }
+
 
 #[cfg(test)]
 mod tests {
@@ -109,7 +109,7 @@ mod tests {
         let chord = Chord::new(vec![note_1, note_2, note_3]);
         assert_eq!(chord.notes.len(), 3);
     }
-
+    
     /// Chord creation from string
     #[test]
     fn chord_from_str() {
@@ -118,7 +118,7 @@ mod tests {
         assert_eq!(chord.notes[1].letter, Letter::E);
         assert_eq!(chord.notes[2].letter, Letter::G);
     }
-
+    
     /// Chord optimal voice leading
     #[test]
     fn chord_transition() {
@@ -127,4 +127,5 @@ mod tests {
         let voiceleaded = from.voicelead_to(&target).unwrap();
         assert_eq!(voiceleaded.notes.len(), target.notes.len());
     }
+    
 }
