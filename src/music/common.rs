@@ -50,3 +50,15 @@ pub enum Interval {
     MajorSeventh,
     Octave,
 }
+
+impl Default for Letter {
+    fn default() -> Self {
+        Letter::C
+    }
+}
+
+impl Default for Interval {
+    fn default() -> Self {
+        Interval::Unison
+    }
+}

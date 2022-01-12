@@ -5,11 +5,10 @@ use itertools::Itertools;
 use std::fmt;
 
 /// Chord is a vector a Notes
-#[derive(Debug)]
+#[derive(Debug, Default)]
 pub struct Chord {
     pub notes: Vec<Note>,
 }
-
 
 impl Chord {
     /// Construct from Note vector
@@ -22,7 +21,7 @@ impl Chord {
         Self::new(
             notes
                 .iter()
-                .map(|note| Note::from_str(note).unwrap())
+                .filter_map(|note| Note::from_str(note))
                 .collect(),
         )
     }
@@ -71,7 +70,7 @@ impl Chord {
             }
         }
         voice_lead
-        }
+    }
 }
 
 impl fmt::Display for Chord {
@@ -79,14 +78,13 @@ impl fmt::Display for Chord {
         let mut notes: String = "".to_string();
         for (i, note) in (&self.notes).iter().enumerate() {
             notes += &format!("{}", note).to_string();
-            if i != self.notes.len()-1 {
+            if i != self.notes.len() - 1 {
                 notes += ","
             }
         }
         write!(f, "Chord({})", notes)
     }
 }
-
 
 #[cfg(test)]
 mod tests {
@@ -111,16 +109,16 @@ mod tests {
         let chord = Chord::new(vec![note_1, note_2, note_3]);
         assert_eq!(chord.notes.len(), 3);
     }
-    
+
     /// Chord creation from string
     #[test]
     fn chord_from_str() {
-        let chord = Chord::from_str(vec!["C0", "E1", "G2"]);
+        let chord = Chord::from_str(vec!["C0", "E1", "G2", "U2"]);
         assert_eq!(chord.notes[0].letter, Letter::C);
         assert_eq!(chord.notes[1].letter, Letter::E);
         assert_eq!(chord.notes[2].letter, Letter::G);
     }
-    
+
     /// Chord optimal voice leading
     #[test]
     fn chord_transition() {
@@ -129,5 +127,4 @@ mod tests {
         let voiceleaded = from.voicelead_to(&target).unwrap();
         assert_eq!(voiceleaded.notes.len(), target.notes.len());
     }
-    
 }

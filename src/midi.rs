@@ -1,13 +1,13 @@
 //! Midi send and receive helpers
 
 use crate::messages;
-use midir::{MidiInput, MidiOutput, MidiOutputPort, MidiInputPort, MidiIO, MidiOutputConnection};
+use crate::messages::{Data, Status};
+use crate::music::chord::Chord;
+use crate::music::note::Note;
+use midir::{MidiIO, MidiInput, MidiInputPort, MidiOutput, MidiOutputConnection, MidiOutputPort};
 use std::io::stdin;
 use std::thread::sleep;
 use std::time::Duration;
-use crate::music::note::Note;
-use crate::music::chord::Chord;
-use crate::messages::{Status};
 
 /// Trait for sending Music struct to Midi
 pub trait MidiSend {
@@ -16,21 +16,33 @@ pub trait MidiSend {
 
 impl MidiSend for Note {
     fn send_midi(&self, conn_out: &mut MidiOutputConnection, duration: u64, velocity: u8) {
-        let _ = conn_out.send(&[Status::NoteOn as u8, self.to_key_number(), velocity]);
+        let mut kn: u8 = 0;
+        if let Data::KeyNumber(x) = self.to_key_number() {
+            kn = x;
+        };
+        let _ = conn_out.send(&[Status::NoteOn as u8, kn, velocity]);
         sleep(Duration::from_millis(duration));
-        let _ = conn_out.send(&[Status::NoteOff as u8, self.to_key_number(), velocity]);
+        let _ = conn_out.send(&[Status::NoteOff as u8, kn, velocity]);
     }
 }
 
 impl MidiSend for Chord {
     fn send_midi(&self, conn_out: &mut MidiOutputConnection, duration: u64, velocity: u8) {
         for note in &self.notes {
-            let _ = conn_out.send(&[0x90, note.to_key_number(), velocity]);
-        }  
+            let mut kn: u8 = 0;
+            if let Data::KeyNumber(x) = note.to_key_number() {
+                kn = x;
+            };
+            let _ = conn_out.send(&[0x90, kn, velocity]);
+        }
         sleep(Duration::from_millis(duration));
         for note in &self.notes {
-            let _ = conn_out.send(&[0x80, note.to_key_number(), velocity]);
-        }  
+            let mut kn: u8 = 0;
+            if let Data::KeyNumber(x) = note.to_key_number() {
+                kn = x;
+            };
+            let _ = conn_out.send(&[0x80, kn, velocity]);
+        }
     }
 }
 
@@ -74,13 +86,21 @@ pub fn send(port: String) {
     };
 
     // Opening connection with input midi device
-    let mut conn_out = midi_out.connect(device_port.unwrap(), "midir-test").unwrap();
+    let mut conn_out = midi_out
+        .connect(device_port.unwrap(), "midir-test")
+        .unwrap();
     println!("Connection open. Listen!");
 
     // Tests
-    Note::from_str("C4").unwrap().send_midi(&mut conn_out, 100, 127);
-    Note::from_str("E4").unwrap().send_midi(&mut conn_out, 100, 127);
-    Note::from_str("G4").unwrap().send_midi(&mut conn_out, 100, 127);
+    Note::from_str("C4")
+        .unwrap()
+        .send_midi(&mut conn_out, 100, 127);
+    Note::from_str("E4")
+        .unwrap()
+        .send_midi(&mut conn_out, 100, 127);
+    Note::from_str("G4")
+        .unwrap()
+        .send_midi(&mut conn_out, 100, 127);
     Chord::from_str(vec!["C4", "E4", "G4", "B4"]).send_midi(&mut conn_out, 500, 127);
 }
 

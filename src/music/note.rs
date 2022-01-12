@@ -1,21 +1,20 @@
 //! Letter and octave
 
 use crate::messages::Data;
-use crate::music::common::Letter;
 use crate::music::common::Interval;
+use crate::music::common::Letter;
 use crate::music::common::KEYBOARD;
 use std::fmt;
 use std::ops;
 
 /// Note abstraction with letter and octave
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone, Copy, Default)]
 pub struct Note {
     pub letter: Letter,
     pub octave: i8,
 }
 
 impl Note {
-    
     /// Construct Note from Letter and octave
     pub fn new(letter: Letter, octave: i8) -> Self {
         Note { letter, octave }
@@ -24,24 +23,24 @@ impl Note {
     /// Construct Note from &str
     pub fn from_str(s: &str) -> Option<Self> {
         let letter_str: &str = &s[0..s.len() - 1];
-        let octave_str: &str = &s[s.len() - 1..];
+        let octave_str: &i8 = &s[s.len() - 1..].parse::<i8>().unwrap();
         let letter: Option<Letter> = match letter_str {
-            "C" => Some(Letter::C),
-            "Db" => Some(Letter::Db),
+            "C" | "B#" => Some(Letter::C),
+            "Db" | "C#" => Some(Letter::Db),
             "D" => Some(Letter::D),
-            "Eb" => Some(Letter::Eb),
-            "E" => Some(Letter::E),
-            "F" => Some(Letter::F),
-            "Gb" => Some(Letter::Gb),
+            "Eb" | "D#" => Some(Letter::Eb),
+            "E" | "Fb" => Some(Letter::E),
+            "F" | "E#" => Some(Letter::F),
+            "Gb" | "F#" => Some(Letter::Gb),
             "G" => Some(Letter::G),
-            "Ab" => Some(Letter::Ab),
+            "Ab" | "G#" => Some(Letter::Ab),
             "A" => Some(Letter::A),
-            "Bb" => Some(Letter::Bb),
-            "B" => Some(Letter::B),
+            "Bb" | "A#" => Some(Letter::Bb),
+            "B" | "Cb" => Some(Letter::B),
             _ => None,
         };
         match letter {
-            Some(l) => Some(Note::new(l, octave_str.parse::<i8>().unwrap())),
+            Some(l) => Some(Note::new(l, *octave_str)),
             None => None,
         }
     }
@@ -61,9 +60,9 @@ impl Note {
     }
 
     /// Convert Note to midi key number
-    pub fn to_key_number(&self) -> u8 {
+    pub fn to_key_number(&self) -> Data {
         let p = KEYBOARD.iter().position(|&n| n == self.letter).unwrap() as u8;
-        12 + p + (self.octave as u8) * 12
+        Data::KeyNumber(12 + p + (self.octave as u8) * 12)
     }
 
     /// Compute distance in semitones between two notes
@@ -84,26 +83,32 @@ impl fmt::Display for Note {
     }
 }
 
-// Overload operator + for Note + Interval 
+// Overload operator + for Note + Interval
 impl ops::Add<Interval> for Note {
     type Output = Note;
     fn add(self, rhs: Interval) -> Note {
         let self_index: u8 = KEYBOARD.iter().position(|&x| x == self.letter).unwrap() as u8;
         let target_index: u8 = self_index + rhs as u8;
-        Note::new(KEYBOARD[(target_index%12) as usize], self.octave + (target_index/12) as i8)
+        Note::new(
+            KEYBOARD[(target_index % 12) as usize],
+            self.octave + (target_index / 12) as i8,
+        )
     }
 }
 
-// Overload operator - for Note - Interval 
+// Overload operator - for Note - Interval
 impl ops::Sub<Interval> for Note {
     type Output = Note;
     fn sub(self, rhs: Interval) -> Note {
         let self_index: i8 = KEYBOARD.iter().position(|&x| x == self.letter).unwrap() as i8;
         let mut target_index: i8 = self_index - (rhs as i8);
         if target_index < 0 {
-            target_index += 12;
+            target_index += 12
         }
-        Note::new(KEYBOARD[(target_index%12) as usize], self.octave + (self_index - (rhs as i8))/12)
+        Note::new(
+            KEYBOARD[(target_index % 12) as usize],
+            self.octave + (self_index - (rhs as i8)) / 12,
+        )
     }
 }
 
@@ -158,7 +163,6 @@ mod tests {
         assert_eq!((c - Interval::MajorSecond).letter, Letter::Bb);
         assert_eq!((c - Interval::MinorSecond).letter, Letter::B);
         assert_eq!((c - Interval::Unison).letter, Letter::C);
-        
     }
 
     #[test]

@@ -1,42 +1,62 @@
 //! Root note and a set of Intervals
 
-use crate::music::common::Interval::*;
 use crate::music::common::Interval;
+use crate::music::common::Interval::*;
 use crate::music::note::Note;
-use crate::music::common::Letter;
 
 /// A scale consists in a root Note and a vector of Intervals
 pub struct Scale {
     pub root: Note,
-    pub intervals: Vec<Interval>
+    pub intervals: Vec<Interval>,
 }
 
 impl Scale {
     /// Default constructor
-    pub fn new(root : Note, intervals : Vec<Interval>) -> Self {
-        Scale {root, intervals}
+    pub fn new(root: Note, intervals: Vec<Interval>) -> Self {
+        Scale { root, intervals }
     }
 
     /// Major scale intervals
-    pub const MAJOR: [Interval; 6] = [MajorSecond, MajorThird, Fourth, Fifth, MajorSixth, MajorSeventh];
+    pub const MAJOR: [Interval; 6] = [
+        MajorSecond,
+        MajorThird,
+        Fourth,
+        Fifth,
+        MajorSixth,
+        MajorSeventh,
+    ];
     /// Minor (natural) scale intervals
-    pub const MINOR: [Interval; 6] = [MajorSecond, MinorThird, Fourth, Fifth, MinorSixth, MinorSeventh];
+    pub const MINOR: [Interval; 6] = [
+        MajorSecond,
+        MinorThird,
+        Fourth,
+        Fifth,
+        MinorSixth,
+        MinorSeventh,
+    ];
     /// Minor (harmonic) scale intervals
-    pub const MINOR_HARMONIC: [Interval; 6] = [MajorSecond, MinorThird, Fourth, Fifth, MinorSixth, MajorSeventh];
+    pub const MINOR_HARMONIC: [Interval; 6] = [
+        MajorSecond,
+        MinorThird,
+        Fourth,
+        Fifth,
+        MinorSixth,
+        MajorSeventh,
+    ];
 
     /// Get major scale from root Note
     pub fn major(root: Note) -> Self {
-        Scale::new(root, Self::MAJOR.to_vec())
+        Self::new(root, Self::MAJOR.to_vec())
     }
 
     /// Get minor (natural) scale from root Note
     pub fn minor(root: Note) -> Self {
-        Scale::new(root, Self::MINOR.to_vec())
+        Self::new(root, Self::MINOR.to_vec())
     }
 
     /// Get minor (harmonic) scale from root Note
     pub fn minor_harmonic(root: Note) -> Self {
-        Scale::new(root, Self::MINOR_HARMONIC.to_vec())
+        Self::new(root, Self::MINOR_HARMONIC.to_vec())
     }
 
     /// Get Note vector from Scale
@@ -52,6 +72,7 @@ impl Scale {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::music::common::Letter;
 
     #[test]
     fn get_notes() {
@@ -61,7 +82,6 @@ mod tests {
         let notes = scale.notes();
         assert_eq!(notes[0].letter, Letter::C);
         assert_eq!(notes[1].letter, Letter::D);
-
     }
 
     #[test]
