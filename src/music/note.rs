@@ -1,11 +1,8 @@
 //! Letter and octave
 
 use crate::messages::Data;
-use crate::music::common::Interval;
-use crate::music::common::Letter;
-use crate::music::common::KEYBOARD;
-use std::fmt;
-use std::ops;
+use crate::music::common::{KEYBOARD, Interval, Letter, find_letter_idx};
+use std::{fmt, ops};
 
 /// Note abstraction with letter and octave
 #[derive(Debug, Clone, Copy, Default)]
@@ -20,32 +17,10 @@ impl Note {
         Note { letter, octave }
     }
 
-    /// Construct Note from midi key number
-    pub fn from_key_number(kn: &Data) -> Option<Self> {
-        match kn {
-            Data::KeyNumber(x) => {
-                let index: usize = ((x - 21) % 12) as usize;
-                Some(Note {
-                    letter: KEYBOARD[index],
-                    octave: (*x as i8 - 21) / 12,
-                })
-            }
-            _ => None,
-        }
-    }
-
-    /// Convert Note to midi key number
-    pub fn to_key_number(&self) -> Data {
-        let p = KEYBOARD.iter().position(|&n| n == self.letter).unwrap() as u8;
-        Data::KeyNumber(12 + p + (self.octave as u8) * 12)
-    }
-
     /// Compute distance in semitones between two notes
     pub fn dist_to(&self, other: &Note) -> u8 {
-        let octave_difference: i8 = self.octave as i8 - other.octave as i8;
-        let self_index: i8 = KEYBOARD.iter().position(|&x| x == self.letter).unwrap() as i8;
-        let other_index: i8 = KEYBOARD.iter().position(|&x| x == other.letter).unwrap() as i8;
-        (self_index - other_index + octave_difference * 12)
+        let octave_diff: i8 = self.octave as i8 - other.octave as i8;
+        (find_letter_idx(self.letter) - find_letter_idx(other.letter) + octave_diff * 12)
             .abs()
             .try_into()
             .unwrap()
@@ -55,6 +30,19 @@ impl Note {
 impl fmt::Display for Note {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(f, "{:?}{}", self.letter, self.octave)
+    }
+}
+
+impl TryFrom<&Data> for Note {
+    type Error = ();
+    fn try_from(kn: &Data) -> Result<Self, Self::Error> {
+        match kn {
+            Data::KeyNumber(x) => {
+                let index: usize = ((x - 21) % 12) as usize;
+                Ok(Note::new(KEYBOARD[index], (*x as i8 - 21) / 12))
+            }
+            _ => Err(()),
+        }
     }
 }
 

@@ -17,7 +17,7 @@ pub trait MidiSend {
 impl MidiSend for Note {
     fn send_midi(&self, conn_out: &mut MidiOutputConnection, duration: u64, velocity: u8) {
         let mut kn: u8 = 0;
-        if let Data::KeyNumber(x) = self.to_key_number() {
+        if let Data::KeyNumber(x) = messages::from_note(self) {
             kn = x;
         };
         let _ = conn_out.send(&[Status::NoteOn as u8, kn, velocity]);
@@ -30,7 +30,7 @@ impl MidiSend for Chord {
     fn send_midi(&self, conn_out: &mut MidiOutputConnection, duration: u64, velocity: u8) {
         for note in &self.notes {
             let mut kn: u8 = 0;
-            if let Data::KeyNumber(x) = note.to_key_number() {
+            if let Data::KeyNumber(x) = messages::from_note(note) {
                 kn = x;
             };
             let _ = conn_out.send(&[0x90, kn, velocity]);
@@ -38,7 +38,7 @@ impl MidiSend for Chord {
         sleep(Duration::from_millis(duration));
         for note in &self.notes {
             let mut kn: u8 = 0;
-            if let Data::KeyNumber(x) = note.to_key_number() {
+            if let Data::KeyNumber(x) = messages::from_note(note) {
                 kn = x;
             };
             let _ = conn_out.send(&[0x80, kn, velocity]);

@@ -62,3 +62,8 @@ impl Default for Interval {
         Interval::Unison
     }
 }
+
+/// Find index of Letter in Keyboard
+pub fn find_letter_idx(letter: Letter) -> i8{
+    KEYBOARD.iter().position(|&x| x == letter).unwrap() as i8
+}

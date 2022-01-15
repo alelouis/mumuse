@@ -2,6 +2,7 @@
 
 use crate::conversions::encode_hex;
 use crate::music::note::Note;
+use crate::music::common::KEYBOARD;
 use colored::Colorize;
 use std::fmt;
 
@@ -238,7 +239,7 @@ impl Midi {
     // Get Note struct from Midi message
     pub fn get_midi_note(&self) -> Option<Note> {
         match &self.status {
-            Status::NoteOn | Status::NoteOff => Note::from_key_number(&self.data[0]),
+            Status::NoteOn | Status::NoteOff => Some(Note::try_from(&self.data[0]).unwrap()),
             _ => None,
         }
     }
@@ -290,4 +291,9 @@ pub enum Data {
     PolyModeOn,
     Generic(u8),
     None,
+}
+
+pub fn from_note(note: &Note) -> Data {
+    let p = KEYBOARD.iter().position(|&n| n == note.letter).unwrap() as u8;
+    Data::KeyNumber(12 + p + (note.octave as u8) * 12)
 }
