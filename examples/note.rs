@@ -16,5 +16,4 @@ fn main() {
     // Transpose down by one Octave
     let octave = n - Interval::Octave;
     println!("Octave down : {}", octave);
-    
 }

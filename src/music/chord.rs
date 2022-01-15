@@ -1,7 +1,7 @@
 //! Collection of Notes
 
-use crate::music::note::Note;
 use crate::music::common::Interval;
+use crate::music::note::Note;
 use itertools::Itertools;
 use std::{fmt, ops};
 
@@ -23,7 +23,7 @@ impl Chord {
         let len = self.notes.len();
         for _ in 0..inversion {
             notes.rotate_left(1);
-            notes[len-1].octave += 1;
+            notes[len - 1].octave += 1;
         }
         Self::new(notes)
     }

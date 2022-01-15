@@ -1,5 +1,7 @@
 //! Common music definitions
 
+use std::ops;
+
 /// Twelve tone temperament Keyboard vector of Note
 pub const KEYBOARD: [Letter; 12] = [
     Letter::C,

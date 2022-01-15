@@ -5,7 +5,7 @@ use mumuse::music::scale::Scale;
 
 // Secondary dominants function
 fn get_five(scale: &Scale, degree: usize) -> Chord {
-    Scale::major(scale.notes()[degree-1]).five(4)
+    Scale::major(scale.notes()[degree - 1]).five(4)
 }
 
 fn main() {
@@ -15,7 +15,7 @@ fn main() {
 
     // Fill with chords
     let chords = (1..6).map(|degree| major_scale.by_degree(degree, 3).invert(2));
-    let secondary_dominants = (1..6).map(|degree| get_five(&major_scale, degree+1));
+    let secondary_dominants = (1..6).map(|degree| get_five(&major_scale, degree + 1));
 
     // Play them through midi
     // midi::show_output_ports(); // show output ports
