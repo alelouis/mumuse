@@ -16,15 +16,6 @@ impl Chord {
         Self { notes }
     }
 
-    /// Construct chord from vector str slices
-    pub fn from_str(notes: Vec<&str>) -> Self {
-        Self::new(notes
-            .iter()
-            .filter_map(|note| Note::from_str(note))
-            .collect(),
-        )
-    }
-
     /// Finds optimal minimum movement chord to target
     pub fn voicelead_to(&self, target: &Self) -> Option<Self> {
         let mut dist_vec: Vec<Vec<Vec<u8>>> = vec![];
@@ -72,6 +63,16 @@ impl Chord {
         }
 }
 
+impl From<Vec<&str>> for Chord {
+    fn from(notes: Vec<&str>) -> Self {
+        Self::new(notes
+            .iter()
+            .filter_map(|note| Note::from_str(note))
+            .collect(),
+        )
+    }
+}
+
 impl fmt::Display for Chord {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         let mut notes: String = "".to_string();
@@ -113,7 +114,7 @@ mod tests {
     /// Chord creation from string
     #[test]
     fn chord_from_str() {
-        let chord = Chord::from_str(vec!["C0", "E1", "G2", "U2"]);
+        let chord = Chord::from(vec!["C0", "E1", "G2", "U2"]);
         assert_eq!(chord.notes[0].letter, Letter::C);
         assert_eq!(chord.notes[1].letter, Letter::E);
         assert_eq!(chord.notes[2].letter, Letter::G);
@@ -122,8 +123,8 @@ mod tests {
     /// Chord optimal voice leading
     #[test]
     fn chord_transition() {
-        let from = Chord::from_str(vec!["C4", "E4", "G4", "B4"]);
-        let target = Chord::from_str(vec!["E4", "G4", "B4", "D5"]);
+        let from = Chord::from(vec!["C4", "E4", "G4", "B4"]);
+        let target = Chord::from(vec!["E4", "G4", "B4", "D5"]);
         let voiceleaded = from.voicelead_to(&target).unwrap();
         assert_eq!(voiceleaded.notes.len(), target.notes.len());
     }

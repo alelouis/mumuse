@@ -5,7 +5,7 @@ use mumuse::music::note::Note;
 
 fn main() {
     // From an str (Vector) directly
-    let chord_from_str= Chord::from_str(vec!["C0", "E1", "G2"]);
+    let chord_from_str= Chord::from(vec!["C0", "E1", "G2"]);
     println!("From str vector : {}", chord_from_str);
 
     // Same chord, but from a Vector Note

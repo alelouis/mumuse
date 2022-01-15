@@ -101,7 +101,7 @@ pub fn send(port: String) {
     Note::from_str("G4")
         .unwrap()
         .send_midi(&mut conn_out, 100, 127);
-    Chord::from_str(vec!["C4", "E4", "G4", "B4"]).send_midi(&mut conn_out, 500, 127);
+    Chord::from(vec!["C4", "E4", "G4", "B4"]).send_midi(&mut conn_out, 500, 127);
 }
 
 /// Midi stream receive and parse
