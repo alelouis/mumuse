@@ -114,11 +114,11 @@ impl Scale {
 
     /// Get Note vector from Scale
     pub fn notes(&self) -> Vec<Note> {
-        let mut out: Vec<Note> = vec![];
-        for interval in &self.intervals {
-            out.push(self.root + *interval)
-        }
-        out
+        self.intervals
+            .clone()
+            .into_iter()
+            .map(|interval| self.root + interval)
+            .collect_vec()
     }
 }
 
