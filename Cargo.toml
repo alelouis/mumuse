@@ -2,8 +2,11 @@
 name = "mumuse"
 version = "0.3.0"
 edition = "2021"
-description = "Small midi parser and music theory library written in Rust"
+description = "Small music theory library written in Rust with MIDI capabilities."
 license = "GPL-3.0-only"
+documentation = "https://docs.rs/mumuse/latest/mumuse/"
+repository = "https://github.com/alelouis/mumuse/"
+keywords = ["music", "midi"]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 

@@ -1,11 +1,10 @@
-use itertools::Itertools;
 use mumuse::midi::{self, MidiSend};
 use mumuse::music::chord::Chord;
 use mumuse::music::note::Note;
 use mumuse::music::scale::Scale;
 
 fn main() {
-    
+
     // Declare a root note
     let root = Note::try_from("C3").unwrap();
     let major_scale = Scale::major(root);
