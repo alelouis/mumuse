@@ -93,13 +93,15 @@ impl ops::Sub<Interval> for Note {
     type Output = Note;
     fn sub(self, rhs: Interval) -> Note {
         let self_index = find_letter_idx(self.letter);
+        let mut neg_offset = 0;
         let mut target_index: i8 = self_index - (rhs as i8);
         if target_index < 0 {
-            target_index += 12 * (1 - target_index / 12)
+            target_index += 12 * (1 - target_index / 12);
+            neg_offset = -1;
         }
         Note::new(
             KEYBOARD[(target_index % 12) as usize],
-            self.octave + (self_index - (rhs as i8)) / 12,
+            self.octave + neg_offset + (self_index - (rhs as i8)) / 12,
         )
     }
 }
@@ -122,7 +124,7 @@ mod tests {
     #[test]
     fn note_add_interval() {
         let c = Note::try_from("C2").unwrap();
-        for i in 0..24 {
+        for i in 1..24 {
             let interval: Interval = num::FromPrimitive::from_u32(i).unwrap();
             let letter: Letter = num::FromPrimitive::from_u32(i % 12).unwrap();
             let note = c + interval;
@@ -134,12 +136,12 @@ mod tests {
     #[test]
     fn note_sub_interval() {
         let c = Note::try_from("C2").unwrap();
-        for i in 0..24 {
+        for i in 1..24 {
             let interval: Interval = num::FromPrimitive::from_u32(i).unwrap();
             let letter: Letter = num::FromPrimitive::from_u32((24 - i) % 12).unwrap();
             let note = c - interval;
             assert_eq!(note.letter, letter);
-            assert_eq!(note.octave as i8, 2 - (i as i8) / 12);
+            assert_eq!(note.octave as i8, 1 - (i as i8) / 12);
         }
     }
 

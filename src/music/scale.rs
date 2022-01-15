@@ -66,6 +66,11 @@ impl Scale {
         Self::new(root, Self::MINOR_HARMONIC.to_vec())
     }
 
+    // Chord built by degrees (degree = 1 same as self.one() call)
+    pub fn by_degree(&self, degree: usize, len: usize) -> Chord {
+        Chord::new(self.build_by_steps(degree - 1, 2, len))
+    }
+
     /// One chord built by thirds (if scale built by thirds).
     pub fn one(&self, len: usize) -> Chord {
         Chord::new(self.build_by_steps(0, 2, len))

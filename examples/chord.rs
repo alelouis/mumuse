@@ -5,11 +5,11 @@ use mumuse::music::common::Interval;
 
 fn main() {
     // From an str Vec directly
-    let chord_from_str = Chord::from(vec!["C0", "E0", "G0"]);
+    let chord_from_str = Chord::from(vec!["C4", "E4", "G4"]);
     println!("From str vector : {}", chord_from_str);
 
     // Same chord, but from a Vector Note
-    let notes = vec!["C0", "E0", "G0"]
+    let notes = vec!["C4", "E4", "G4"]
         .iter()
         .filter_map(|x| Note::try_from(*x).ok())
         .collect();
@@ -24,7 +24,7 @@ fn main() {
 
     // Transposition
     let chord_one_fifth = chord_from_str.clone() + Interval::Fifth; // Chord is not Copy
-    let chord_one_octave_up = chord_from_str.clone() + Interval::Octave;
+    let chord_one_octave_down = chord_from_str.clone() - Interval::Octave;
     println!("Fifth up : {}", chord_one_fifth);
-    println!("Octave up : {}", chord_one_octave_up);
+    println!("Octave down : {}", chord_one_octave_down);
 }
