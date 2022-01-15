@@ -85,36 +85,6 @@ fn get_port_index_by_name<T: MidiIO>(midi_in: &T, name: String) -> Option<usize>
     port_index
 }
 
-/// Midi stream send
-pub fn send(port: String) {
-    let midi_out = MidiOutput::new("midi_out").expect("Could not open midi output.");
-    let input_ports = midi_out.ports();
-
-    // Getting input device port
-    let device_port: Option<&MidiOutputPort> = match get_port_index_by_name(&midi_out, port) {
-        Some(i) => input_ports.get(i),
-        None => None,
-    };
-
-    // Opening connection with input midi device
-    let mut conn_out = midi_out
-        .connect(device_port.unwrap(), "midir-test")
-        .unwrap();
-    println!("Connection open. Listen!");
-
-    // Tests
-    Note::try_from("C4")
-        .unwrap()
-        .send_midi(&mut conn_out, 100, 127);
-    Note::try_from("E4")
-        .unwrap()
-        .send_midi(&mut conn_out, 100, 127);
-    Note::try_from("G4")
-        .unwrap()
-        .send_midi(&mut conn_out, 100, 127);
-    Chord::from(vec!["C4", "E4", "G4", "B4"]).send_midi(&mut conn_out, 500, 127);
-}
-
 /// Midi stream receive and parse
 pub fn receive(name: String) {
     let mut input = String::new();
