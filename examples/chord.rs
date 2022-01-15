@@ -1,4 +1,3 @@
-extern crate mumuse;
 use mumuse::music::chord::Chord;
 use mumuse::music::common::Interval;
 use mumuse::music::note::Note;
