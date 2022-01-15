@@ -1,5 +1,7 @@
 # mumuse
 
+![example workflow](https://github.com/alelouis/mumuse/actions/workflows/rust.yml/badge.svg)
+
 Small music theory library with MIDI capabilities written in Rust *(wip)*.  
 Scroll documentation : [**doc.rs/mumuse/latest**](https://docs.rs/mumuse/latest/mumuse/)  
 (or `cargo doc` for unreleased state).
