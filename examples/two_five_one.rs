@@ -5,7 +5,7 @@ use mumuse::midi::{self, MidiSend};
 
 fn main() {
     // Declare a root note
-    let root = Note::try_from("C0").unwrap();
+    let root = Note::try_from("C4").unwrap();
     
     // Fill with chords
     let chords: Vec<Chord> = vec![
@@ -17,5 +17,7 @@ fn main() {
     // Play them through midi
     // midi::show_output_ports(); // show output ports
     let mut conn_out = midi::get_output_connection("Virtual Midi Bus 1".to_string());
-    chords[0].send_midi(&mut conn_out, 500, 127);
+    for chord in chords {
+        chord.send_midi(&mut conn_out, 500, 64);
+    }
 }
