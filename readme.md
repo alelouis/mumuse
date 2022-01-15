@@ -1,7 +1,7 @@
 # mumuse
 
 Small music theory library with MIDI capabilities written in Rust *(wip)*.  
-Scroll documentation : [**doc.rs/mumuse**](https://docs.rs/mumuse/0.1.0/mumuse/)  
+Scroll documentation : [**doc.rs/mumuse/latest**](https://docs.rs/mumuse/latest/mumuse/)  
 (or `cargo doc` for unreleased state).
 ```rust 
 fn main() {
