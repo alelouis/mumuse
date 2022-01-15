@@ -8,7 +8,7 @@ fn main() {
     let root = Note::try_from("C3").unwrap(); // can fail
 
     // Compute whole tone scale
-    let circle_of_fifths = (0..12)
+    let whole_tone = (0..12)
         .scan(root, |s, _| {
             *s = *s + Interval::MajorSecond;
             Some(*s)
@@ -18,7 +18,7 @@ fn main() {
     // Play them through midi
     // midi::show_output_ports(); // show output ports
     let mut conn_out = midi::get_output_connection("Virtual Midi Bus 1".to_string());
-    for note in circle_of_fifths {
-        note.send_midi(&mut conn_out, 100, 64);
-    }
+    whole_tone
+        .iter()
+        .for_each(|note| note.send_midi(&mut conn_out, 100, 64));
 }

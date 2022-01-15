@@ -1,5 +1,4 @@
 use mumuse::midi::{self, MidiSend};
-use mumuse::music::chord::Chord;
 use mumuse::music::note::Note;
 use mumuse::music::scale::Scale;
 
