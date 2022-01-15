@@ -1,6 +1,6 @@
 [package]
 name = "mumuse"
-version = "0.1.0"
+version = "0.2.0"
 edition = "2021"
 description = "Small midi parser and music theory library written in Rust"
 license = "GPL-3.0-only"
