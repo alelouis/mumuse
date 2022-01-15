@@ -6,7 +6,7 @@ fn from_key_number_to_note() {
     use crate::messages;
     use crate::music::common::KEYBOARD;
     use crate::music::note::Note;
-    
+
     for kn in 21..127 {
         let data_kn = messages::Data::KeyNumber(kn);
         let note = match Note::from_key_number(&data_kn) {

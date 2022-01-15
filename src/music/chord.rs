@@ -60,15 +60,16 @@ impl Chord {
             }
         }
         voice_lead
-        }
+    }
 }
 
 impl From<Vec<&str>> for Chord {
     fn from(notes: Vec<&str>) -> Self {
-        Self::new(notes
-            .iter()
-            .filter_map(|note| Note::from_str(note))
-            .collect(),
+        Self::new(
+            notes
+                .iter()
+                .filter_map(|note| Note::try_from(*note).ok())
+                .collect(),
         )
     }
 }
@@ -78,7 +79,7 @@ impl fmt::Display for Chord {
         let mut notes: String = "".to_string();
         for (i, note) in (&self.notes).iter().enumerate() {
             notes += &format!("{}", note).to_string();
-            if i != self.notes.len()-1 {
+            if i != self.notes.len() - 1 {
                 notes += ","
             }
         }
@@ -86,31 +87,11 @@ impl fmt::Display for Chord {
     }
 }
 
-
 #[cfg(test)]
 mod tests {
     use super::*;
     use crate::music::common::Letter;
 
-    /// Chord creation from struct
-    #[test]
-    fn chord_from_struct() {
-        let note_1 = Note {
-            letter: Letter::C,
-            octave: 0,
-        };
-        let note_2 = Note {
-            letter: Letter::E,
-            octave: 0,
-        };
-        let note_3 = Note {
-            letter: Letter::G,
-            octave: 0,
-        };
-        let chord = Chord::new(vec![note_1, note_2, note_3]);
-        assert_eq!(chord.notes.len(), 3);
-    }
-    
     /// Chord creation from string
     #[test]
     fn chord_from_str() {
@@ -119,7 +100,7 @@ mod tests {
         assert_eq!(chord.notes[1].letter, Letter::E);
         assert_eq!(chord.notes[2].letter, Letter::G);
     }
-    
+
     /// Chord optimal voice leading
     #[test]
     fn chord_transition() {
@@ -128,5 +109,4 @@ mod tests {
         let voiceleaded = from.voicelead_to(&target).unwrap();
         assert_eq!(voiceleaded.notes.len(), target.notes.len());
     }
-    
 }

@@ -20,31 +20,6 @@ impl Note {
         Note { letter, octave }
     }
 
-    /// Construct Note from &str
-    pub fn from_str(s: &str) -> Option<Self> {
-        let letter_str: &str = &s[0..s.len() - 1];
-        let octave_str: &i8 = &s[s.len() - 1..].parse::<i8>().unwrap();
-        let letter: Option<Letter> = match letter_str {
-            "C" | "B#" => Some(Letter::C),
-            "Db" | "C#" => Some(Letter::Db),
-            "D" => Some(Letter::D),
-            "Eb" | "D#" => Some(Letter::Eb),
-            "E" | "Fb" => Some(Letter::E),
-            "F" | "E#" => Some(Letter::F),
-            "Gb" | "F#" => Some(Letter::Gb),
-            "G" => Some(Letter::G),
-            "Ab" | "G#" => Some(Letter::Ab),
-            "A" => Some(Letter::A),
-            "Bb" | "A#" => Some(Letter::Bb),
-            "B" | "Cb" => Some(Letter::B),
-            _ => None,
-        };
-        match letter {
-            Some(l) => Some(Note::new(l, *octave_str)),
-            None => None,
-        }
-    }
-
     /// Construct Note from midi key number
     pub fn from_key_number(kn: &Data) -> Option<Self> {
         match kn {
@@ -83,6 +58,32 @@ impl fmt::Display for Note {
     }
 }
 
+impl TryFrom<&str> for Note {
+    type Error = ();
+    fn try_from(s: &str) -> Result<Self, Self::Error> {
+        let octave_str: &i8 = &s[s.len() - 1..].parse::<i8>().unwrap();
+        let letter: Option<Letter> = match &s[0..s.len() - 1] {
+            "C" | "B#" => Some(Letter::C),
+            "Db" | "C#" => Some(Letter::Db),
+            "D" => Some(Letter::D),
+            "Eb" | "D#" => Some(Letter::Eb),
+            "E" | "Fb" => Some(Letter::E),
+            "F" | "E#" => Some(Letter::F),
+            "Gb" | "F#" => Some(Letter::Gb),
+            "G" => Some(Letter::G),
+            "Ab" | "G#" => Some(Letter::Ab),
+            "A" => Some(Letter::A),
+            "Bb" | "A#" => Some(Letter::Bb),
+            "B" | "Cb" => Some(Letter::B),
+            _ => None,
+        };
+        match letter {
+            Some(l) => Ok(Note::new(l, *octave_str)),
+            None => Err(()),
+        }
+    }
+}
+
 // Overload operator + for Note + Interval
 impl ops::Add<Interval> for Note {
     type Output = Note;
@@ -118,18 +119,18 @@ mod tests {
 
     #[test]
     fn note_from_str() {
-        let a = Note::from_str("A0").unwrap();
+        let a = Note::try_from("A0").unwrap();
         assert_eq!(a.letter, Letter::A);
         assert_eq!(a.octave, 0);
 
-        let bb = Note::from_str("Bb2").unwrap();
+        let bb = Note::try_from("Bb2").unwrap();
         assert_eq!(bb.letter, Letter::Bb);
         assert_eq!(bb.octave, 2);
     }
 
     #[test]
     fn note_add_interval() {
-        let c = Note::from_str("C0").unwrap();
+        let c = Note::try_from("C0").unwrap();
         assert_eq!((c + Interval::Unison).letter, Letter::C);
         assert_eq!((c + Interval::MinorSecond).letter, Letter::Db);
         assert_eq!((c + Interval::MajorSecond).letter, Letter::D);
@@ -148,7 +149,7 @@ mod tests {
 
     #[test]
     fn note_sub_interval() {
-        let c = Note::from_str("C1").unwrap();
+        let c = Note::try_from("C1").unwrap();
         assert_eq!((c - Interval::Octave).octave, 0);
         assert_eq!((c - Interval::Octave).letter, Letter::C);
         assert_eq!((c - Interval::MajorSeventh).letter, Letter::Db);

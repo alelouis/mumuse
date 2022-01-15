@@ -92,13 +92,13 @@ pub fn send(port: String) {
     println!("Connection open. Listen!");
 
     // Tests
-    Note::from_str("C4")
+    Note::try_from("C4")
         .unwrap()
         .send_midi(&mut conn_out, 100, 127);
-    Note::from_str("E4")
+    Note::try_from("E4")
         .unwrap()
         .send_midi(&mut conn_out, 100, 127);
-    Note::from_str("G4")
+    Note::try_from("G4")
         .unwrap()
         .send_midi(&mut conn_out, 100, 127);
     Chord::from(vec!["C4", "E4", "G4", "B4"]).send_midi(&mut conn_out, 500, 127);
