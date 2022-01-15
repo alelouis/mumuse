@@ -27,12 +27,14 @@ impl Note {
     }
 }
 
+/// Display trait for Note
 impl fmt::Display for Note {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "{:?}{}", self.letter, self.octave)
+        write!(f, "Note({:?}{})", self.letter, self.octave)
     }
 }
 
+/// Conversion from Data::KeyNumber
 impl TryFrom<&Data> for Note {
     type Error = ();
     fn try_from(kn: &Data) -> Result<Self, Self::Error> {
@@ -46,6 +48,7 @@ impl TryFrom<&Data> for Note {
     }
 }
 
+/// Conversion from str
 impl TryFrom<&str> for Note {
     type Error = ();
     fn try_from(s: &str) -> Result<Self, Self::Error> {
@@ -72,7 +75,7 @@ impl TryFrom<&str> for Note {
     }
 }
 
-// Overload operator + for Note + Interval
+/// Overload operator + for Note + Interval
 impl ops::Add<Interval> for Note {
     type Output = Note;
     fn add(self, rhs: Interval) -> Note {
@@ -85,7 +88,7 @@ impl ops::Add<Interval> for Note {
     }
 }
 
-// Overload operator - for Note - Interval
+/// Overload operator - for Note - Interval
 impl ops::Sub<Interval> for Note {
     type Output = Note;
     fn sub(self, rhs: Interval) -> Note {

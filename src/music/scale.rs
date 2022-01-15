@@ -6,6 +6,7 @@ use crate::music::chord::Chord;
 use crate::music::common::Interval;
 use crate::music::common::Interval::*;
 use crate::music::note::Note;
+use std::fmt;
 
 /// A scale consists in a root Note and a vector of Intervals
 pub struct Scale {
@@ -119,6 +120,20 @@ impl Scale {
             .into_iter()
             .map(|interval| self.root + interval)
             .collect_vec()
+    }
+}
+
+/// Display trait for Scale
+impl fmt::Display for Scale {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        let mut notes: String = "".to_string();
+        for (i, note) in (&self.notes()).iter().enumerate() {
+            notes += &format!("{}", note).to_string();
+            if i != self.notes().len() - 1 {
+                notes += ","
+            }
+        }
+        write!(f, "Scale({})", notes)
     }
 }
 

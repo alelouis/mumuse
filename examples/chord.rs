@@ -1,5 +1,4 @@
 extern crate mumuse;
-
 use mumuse::music::chord::Chord;
 use mumuse::music::note::Note;
 

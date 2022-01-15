@@ -1,5 +1,3 @@
-extern crate mumuse;
-
 use mumuse::music::common::Letter;
 use mumuse::music::note::Note;
 
