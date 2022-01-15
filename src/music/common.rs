@@ -13,15 +13,12 @@ pub const KEYBOARD: [Letter; 12] = [
     Letter::Ab,
     Letter::A,
     Letter::Bb,
-    Letter::B,
+    Letter::B
 ];
 
 /// Letters to describe notes
-#[derive(Debug, PartialEq, Clone, Copy)]
+#[derive(Debug, PartialEq, Clone, Copy, FromPrimitive)]
 pub enum Letter {
-    A,
-    Bb,
-    B,
     C,
     Db,
     D,
@@ -31,6 +28,9 @@ pub enum Letter {
     Gb,
     G,
     Ab,
+    A,
+    Bb,
+    B
 }
 
 /// Letters to describe notes
@@ -60,7 +60,7 @@ pub enum Interval {
     MajorThirteenth,
     MinorFourteenth,
     MajorFourteenth,
-    Fifteenth,
+    Fifteenth
 }
 
 impl Default for Letter {

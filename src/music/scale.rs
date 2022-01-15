@@ -116,7 +116,7 @@ impl Scale {
         intervals
             .clone()
             .into_iter()
-            .cycle()
+            .cycle() // Wraps around if step / length combination exceeds two octave span
             .skip(root)
             .step_by(step)
             .map(|n| self.root + n)
@@ -168,7 +168,6 @@ mod tests {
         let root = Note::try_from("C0").unwrap();
         let major_scale = Scale::major(root);
         let one_chord = major_scale.one(3);
-        println!("{}", one_chord);
         assert_eq!(one_chord.notes[0].letter, Letter::C);
         assert_eq!(one_chord.notes[1].letter, Letter::E);
         assert_eq!(one_chord.notes[2].letter, Letter::G);
@@ -179,7 +178,6 @@ mod tests {
         let root = Note::try_from("C0").unwrap();
         let major_scale = Scale::major(root);
         let two_chord = major_scale.two(3);
-        println!("{}", two_chord);
         assert_eq!(two_chord.notes[0].letter, Letter::D);
         assert_eq!(two_chord.notes[1].letter, Letter::F);
         assert_eq!(two_chord.notes[2].letter, Letter::A);
