@@ -1,6 +1,10 @@
 # mumuse
 
-![example workflow](https://github.com/alelouis/mumuse/actions/workflows/rust.yml/badge.svg)
+![build](https://github.com/alelouis/mumuse/actions/workflows/rust.yml/badge.svg)
+![license](https://img.shields.io/github/last-commit/alelouis/mumuse)
+[![doc.rs](https://img.shields.io/badge/doc.rs-mumuse-red)](https://docs.rs/mumuse/latest/mumuse/)
+[![crates.io](https://img.shields.io/badge/crates.io-mumuse-red)](https://crates.io/crates/mumuse)
+
 
 Small music theory library with MIDI capabilities written in Rust *(wip)*.  
 Scroll documentation : [**doc.rs/mumuse/latest**](https://docs.rs/mumuse/latest/mumuse/)  
