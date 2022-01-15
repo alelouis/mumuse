@@ -1,17 +1,17 @@
+use mumuse::midi::{self, MidiSend};
+use mumuse::music::chord::Chord;
 use mumuse::music::note::Note;
 use mumuse::music::scale::Scale;
-use mumuse::music::chord::Chord;
-use mumuse::midi::{self, MidiSend};
 
 fn main() {
     // Declare a root note
     let root = Note::try_from("C4").unwrap();
-    
+
     // Fill with chords
     let chords: Vec<Chord> = vec![
         Scale::major(root).two(4),
         Scale::major(root).five(4),
-        Scale::major(root).one(4)
+        Scale::major(root).one(4),
     ];
 
     // Play them through midi

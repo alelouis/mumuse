@@ -70,7 +70,9 @@ pub fn get_output_connection(s: String) -> MidiOutputConnection {
         Some(i) => out_ports.get(i),
         None => None,
     };
-    midi_out.connect(device_port.unwrap(), "midir-test").unwrap()
+    midi_out
+        .connect(device_port.unwrap(), "midir-test")
+        .unwrap()
 }
 
 /// Finds port for a given string name

@@ -13,7 +13,7 @@ pub const KEYBOARD: [Letter; 12] = [
     Letter::Ab,
     Letter::A,
     Letter::Bb,
-    Letter::B
+    Letter::B,
 ];
 
 /// Letters to describe notes
@@ -30,7 +30,7 @@ pub enum Letter {
     Ab,
     A,
     Bb,
-    B
+    B,
 }
 
 /// Letters to describe notes
@@ -60,7 +60,7 @@ pub enum Interval {
     MajorThirteenth,
     MinorFourteenth,
     MajorFourteenth,
-    Fifteenth
+    Fifteenth,
 }
 
 impl Default for Letter {
@@ -76,6 +76,6 @@ impl Default for Interval {
 }
 
 /// Find index of Letter in Keyboard
-pub fn find_letter_idx(letter: Letter) -> i8{
+pub fn find_letter_idx(letter: Letter) -> i8 {
     KEYBOARD.iter().position(|&x| x == letter).unwrap() as i8
 }

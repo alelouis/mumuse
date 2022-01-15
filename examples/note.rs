@@ -1,4 +1,4 @@
-use mumuse::music::common::{Letter, Interval};
+use mumuse::music::common::{Interval, Letter};
 use mumuse::music::note::Note;
 
 fn main() {

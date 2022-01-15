@@ -1,6 +1,6 @@
+use mumuse::midi::{self, MidiSend};
 use mumuse::music::note::Note;
 use mumuse::music::scale::Scale;
-use mumuse::midi::{self, MidiSend};
 
 fn main() {
     // Open Midi output port connection
@@ -21,6 +21,8 @@ fn main() {
         // Create note iterators
         let ascend = chord.notes.clone().into_iter();
         let descend = chord.notes.clone().into_iter().rev();
-        ascend.chain(descend).for_each(|n| n.send_midi(&mut conn_out, 100, 64));
+        ascend
+            .chain(descend)
+            .for_each(|n| n.send_midi(&mut conn_out, 100, 64));
     }
 }

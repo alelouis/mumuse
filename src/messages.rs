@@ -1,8 +1,8 @@
 //! Raw midi parsing and display
 
 use crate::conversions::encode_hex;
-use crate::music::note::Note;
 use crate::music::common::KEYBOARD;
+use crate::music::note::Note;
 use colored::Colorize;
 use std::fmt;
 

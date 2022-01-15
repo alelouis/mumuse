@@ -103,7 +103,9 @@ impl Scale {
 
     fn build_by_steps(&self, root: usize, step: usize, length: usize) -> Vec<Note> {
         // We add all intervals of the scale one octave higher for chord creation
-        let mut intervals_octave_up: Vec<Interval> = self.intervals.clone()
+        let mut intervals_octave_up: Vec<Interval> = self
+            .intervals
+            .clone()
             .into_iter()
             .filter_map(|i| num::FromPrimitive::from_u32(i as u32 + 12))
             .collect_vec();
@@ -187,26 +189,35 @@ mod tests {
     fn major() {
         let root = Note::try_from("C0").unwrap();
         let major_scale = Scale::major(root);
-        assert_eq!(major_scale.notes()[0].letter, Letter::C);
-        assert_eq!(major_scale.notes()[1].letter, Letter::D);
-        assert_eq!(major_scale.notes()[2].letter, Letter::E);
-        assert_eq!(major_scale.notes()[3].letter, Letter::F);
-        assert_eq!(major_scale.notes()[4].letter, Letter::G);
-        assert_eq!(major_scale.notes()[5].letter, Letter::A);
-        assert_eq!(major_scale.notes()[6].letter, Letter::B)
+        let c_major_scale = [
+            Letter::C,
+            Letter::D,
+            Letter::E,
+            Letter::F,
+            Letter::G,
+            Letter::A,
+            Letter::B,
+        ];
+        for i in 0..7 {
+            assert_eq!(major_scale.notes()[i as usize].letter, c_major_scale[i]);
+        }
     }
 
     #[test]
     fn minor() {
         let root = Note::try_from("A0").unwrap();
         let major_scale = Scale::minor(root);
-        assert_eq!(major_scale.notes()[0].letter, Letter::A);
-        assert_eq!(major_scale.notes()[1].letter, Letter::B);
-        assert_eq!(major_scale.notes()[2].letter, Letter::C);
-        assert_eq!(major_scale.notes()[2].octave, 1);
-        assert_eq!(major_scale.notes()[3].letter, Letter::D);
-        assert_eq!(major_scale.notes()[4].letter, Letter::E);
-        assert_eq!(major_scale.notes()[5].letter, Letter::F);
-        assert_eq!(major_scale.notes()[6].letter, Letter::G)
+        let a_minor_scale = [
+            Letter::A,
+            Letter::B,
+            Letter::C,
+            Letter::D,
+            Letter::E,
+            Letter::F,
+            Letter::G,
+        ];
+        for i in 0..7 {
+            assert_eq!(major_scale.notes()[i as usize].letter, a_minor_scale[i]);
+        }
     }
 }
