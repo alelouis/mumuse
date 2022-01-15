@@ -1,11 +1,12 @@
 //! Collection of Notes
 
 use crate::music::note::Note;
+use crate::music::common::Interval;
 use itertools::Itertools;
-use std::fmt;
+use std::{fmt, ops};
 
 /// Chord is a vector a Notes
-#[derive(Debug, Default)]
+#[derive(Debug, Default, Clone)]
 pub struct Chord {
     pub notes: Vec<Note>,
 }
@@ -14,6 +15,17 @@ impl Chord {
     /// Construct from Note vector
     pub fn new(notes: Vec<Note>) -> Self {
         Self { notes }
+    }
+
+    // Chord inversion
+    pub fn invert(&self, inversion: usize) -> Self {
+        let mut notes = self.notes.clone();
+        let len = self.notes.len();
+        for _ in 0..inversion {
+            notes.rotate_left(1);
+            notes[len-1].octave += 1;
+        }
+        Self::new(notes)
     }
 
     /// Finds optimal minimum movement chord to target
@@ -87,10 +99,30 @@ impl fmt::Display for Chord {
     }
 }
 
+/// Overload operator + for Chord + Interval
+impl ops::Add<Interval> for Chord {
+    type Output = Chord;
+    fn add(self, rhs: Interval) -> Chord {
+        Chord::new(self.notes.into_iter().map(|n| n + rhs).collect_vec())
+    }
+}
+
+/// Overload operator - for Chord - Interval
+impl ops::Sub<Interval> for Chord {
+    type Output = Chord;
+    fn sub(self, rhs: Interval) -> Chord {
+        Chord::new(self.notes.into_iter().map(|n| n - rhs).collect_vec())
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
     use crate::music::common::Letter;
+
+    /// TODO
+    /// - [ ] Inversion tests
+    /// - [ ] Transpose tests
 
     /// Chord creation from string
     #[test]
