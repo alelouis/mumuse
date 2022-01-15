@@ -20,8 +20,8 @@ fn main() {
     println!("{:?}", notes);
 
     // Construct Chord from Scale degree
-    let one_chord = Scale::major(root).one();
-    let two_chord = Scale::major(root).two();
+    let one_chord = Scale::major(root).one(3); // 3 notes chord
+    let two_chord = Scale::major(root).two(4); // 4 notes chord
     println!("I chord of C Major Scale : {}", one_chord);
-    println!("ii chord of C Major Scale : {}", two_chord);
+    println!("iim7 chord of C Major Scale : {}", two_chord);
 }

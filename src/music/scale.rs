@@ -66,41 +66,41 @@ impl Scale {
     }
 
     /// One chord built by thirds (if scale built by thirds).
-    pub fn one(&self) -> Chord {
-        Chord::new(self.build_by_steps(0, 2, 3))
+    pub fn one(&self, len: usize) -> Chord {
+        Chord::new(self.build_by_steps(0, 2, len))
     }
 
     /// Two chord built by thirds (if scale built by thirds).
-    pub fn two(&self) -> Chord {
-        Chord::new(self.build_by_steps(1, 2, 3))
+    pub fn two(&self, len: usize) -> Chord {
+        Chord::new(self.build_by_steps(1, 2, len))
     }
 
     /// Three chord built by thirds (if scale built by thirds).
-    pub fn three(&self) -> Chord {
-        Chord::new(self.build_by_steps(2, 2, 3))
+    pub fn three(&self, len: usize) -> Chord {
+        Chord::new(self.build_by_steps(2, 2, len))
     }
 
     /// Four chord built by thirds (if scale built by thirds).
-    pub fn four(&self) -> Chord {
-        Chord::new(self.build_by_steps(3, 2, 3))
+    pub fn four(&self, len: usize) -> Chord {
+        Chord::new(self.build_by_steps(3, 2, len))
     }
 
     /// Five chord built by thirds (if scale built by thirds).
-    pub fn five(&self) -> Chord {
-        Chord::new(self.build_by_steps(4, 2, 3))
+    pub fn five(&self, len: usize) -> Chord {
+        Chord::new(self.build_by_steps(4, 2, len))
     }
 
     /// Six chord built by thirds (if scale built by thirds).
-    pub fn six(&self) -> Chord {
-        Chord::new(self.build_by_steps(5, 2, 3))
+    pub fn six(&self, len: usize) -> Chord {
+        Chord::new(self.build_by_steps(5, 2, len))
     }
 
     /// Seven chord built by thirds (if scale built by thirds).
-    pub fn seven(&self) -> Chord {
-        Chord::new(self.build_by_steps(6, 2, 3))
+    pub fn seven(&self, len: usize) -> Chord {
+        Chord::new(self.build_by_steps(6, 2, len))
     }
 
-    pub fn build_by_steps(&self, root: usize, step: usize, length: usize) -> Vec<Note> {
+    fn build_by_steps(&self, root: usize, step: usize, length: usize) -> Vec<Note> {
         self.intervals
             .clone()
             .into_iter()
@@ -141,7 +141,7 @@ mod tests {
     fn get_one() {
         let root = Note::try_from("C0").unwrap();
         let major_scale = Scale::major(root);
-        let one_chord = major_scale.one();
+        let one_chord = major_scale.one(3);
         println!("{}", one_chord);
         assert_eq!(one_chord.notes[0].letter, Letter::C);
         assert_eq!(one_chord.notes[1].letter, Letter::E);
@@ -152,7 +152,7 @@ mod tests {
     fn get_two() {
         let root = Note::try_from("C0").unwrap();
         let major_scale = Scale::major(root);
-        let two_chord = major_scale.two();
+        let two_chord = major_scale.two(3);
         println!("{}", two_chord);
         assert_eq!(two_chord.notes[0].letter, Letter::D);
         assert_eq!(two_chord.notes[1].letter, Letter::F);
