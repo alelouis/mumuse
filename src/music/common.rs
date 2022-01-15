@@ -34,7 +34,7 @@ pub enum Letter {
 }
 
 /// Letters to describe notes
-#[derive(Debug, PartialEq, Clone, Copy)]
+#[derive(Debug, PartialEq, Clone, Copy, FromPrimitive)]
 pub enum Interval {
     Unison,
     MinorSecond,
@@ -49,6 +49,18 @@ pub enum Interval {
     MinorSeventh,
     MajorSeventh,
     Octave,
+    MinorNinth,
+    MajorNinth,
+    MinorTenth,
+    MajorTenth,
+    Eleventh,
+    DoubleTritone,
+    Twelfth,
+    MinorThirteenth,
+    MajorThirteenth,
+    MinorFourteenth,
+    MajorFourteenth,
+    Fifteenth,
 }
 
 impl Default for Letter {

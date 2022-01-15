@@ -1,12 +1,12 @@
 //! Root note and a set of Intervals
 
 use itertools::Itertools;
+use std::fmt;
 
 use crate::music::chord::Chord;
 use crate::music::common::Interval;
 use crate::music::common::Interval::*;
 use crate::music::note::Note;
-use std::fmt;
 
 /// A scale consists in a root Note and a vector of Intervals
 pub struct Scale {
@@ -102,7 +102,18 @@ impl Scale {
     }
 
     fn build_by_steps(&self, root: usize, step: usize, length: usize) -> Vec<Note> {
-        self.intervals
+        // We add all intervals of the scale one octave higher for chord creation
+        let mut intervals_octave_up: Vec<Interval> = self.intervals.clone()
+            .into_iter()
+            .filter_map(|i| num::FromPrimitive::from_u32(i as u32 + 12))
+            .collect_vec();
+
+        // Concatenate all intervals
+        let mut intervals = self.intervals.clone();
+        intervals.append(&mut intervals_octave_up);
+
+        // Step in interval vector
+        intervals
             .clone()
             .into_iter()
             .cycle()
