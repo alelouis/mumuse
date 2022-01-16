@@ -3,10 +3,10 @@ use mumuse::music::note::Note;
 
 fn main() {
     // Declare Note from &str
-    let _a = Note::try_from("A0").unwrap(); // can fail
+    let _a = Note::try_from("C0").unwrap(); // can fail
 
     // Declare from struct
-    let n = Note::new(Letter::A, 2);
+    let n = Note::new(Letter::C, 2);
     println!("Note : {}", n);
 
     // Transpose up by one Fifth
