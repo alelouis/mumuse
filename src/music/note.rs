@@ -95,10 +95,11 @@ impl ops::Sub<Interval> for Note {
         let self_index = find_letter_idx(self.letter);
         let mut neg_offset = 0;
         let mut target_index: i8 = self_index - (rhs as i8);
-        if target_index < 0 {
-            target_index += 12 * (1 - target_index / 12);
-            neg_offset = -1;
+        while target_index < 0 {
+            target_index += 12;
+            neg_offset = if target_index == 0 { 0 } else { -1 }
         }
+
         Note::new(
             KEYBOARD[(target_index % 12) as usize],
             self.octave + neg_offset + (self_index - (rhs as i8)) / 12,
@@ -139,9 +140,13 @@ mod tests {
         for i in 1..24 {
             let interval: Interval = num::FromPrimitive::from_u32(i).unwrap();
             let letter: Letter = num::FromPrimitive::from_u32((24 - i) % 12).unwrap();
+            println!("{:?}", letter);
+            println!("{:?}", interval);
             let note = c - interval;
+            println!("{note}");
+            println!("{i}");
             assert_eq!(note.letter, letter);
-            assert_eq!(note.octave as i8, 1 - (i as i8) / 12);
+            assert_eq!(note.octave as i8, 1 - (i as i8) / 12 + if i%12 == 0 {1} else {0});
         }
     }
 
