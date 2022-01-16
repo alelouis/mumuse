@@ -140,11 +140,7 @@ mod tests {
         for i in 1..24 {
             let interval: Interval = num::FromPrimitive::from_u32(i).unwrap();
             let letter: Letter = num::FromPrimitive::from_u32((24 - i) % 12).unwrap();
-            println!("{:?}", letter);
-            println!("{:?}", interval);
             let note = c - interval;
-            println!("{note}");
-            println!("{i}");
             assert_eq!(note.letter, letter);
             assert_eq!(note.octave as i8, 1 - (i as i8) / 12 + if i%12 == 0 {1} else {0});
         }
