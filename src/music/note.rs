@@ -24,6 +24,8 @@ impl Note {
     /// Create Chord with self as root note
     pub fn chord(&self, s: &str) -> Chord {
         let intervals = match s {
+            "sus2" => vec![Unison, MajorSecond, Fifth],
+            "sus4" => vec![Unison, Fourth, Fifth],
             "maj" => vec![Unison, MajorThird, Fifth],
             "min" => vec![Unison, MinorThird, Fifth],
             "dim" => vec![Unison, MinorThird, Tritone],
