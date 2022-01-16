@@ -51,6 +51,41 @@ impl Scale {
         MajorSeventh,
     ];
 
+    /// Get mode n of current scale
+    pub fn mode(&self, n: i8) -> Self {
+        let mut mode = n as i8 - 1;
+        while mode < 0 {
+            // wrap around invalid modes identifiers
+            mode += self.intervals.len() as i8;
+        }
+
+        // Convert intervals to int for computations
+        let reference = self.intervals.clone()[mode as usize] as i8;
+        let mut int_intervals = self
+            .intervals
+            .clone()
+            .iter()
+            .map(|x| {
+                let mut a = *x as i8 - reference;
+                if a < 0 {
+                    a += 12;
+                }
+                a
+            })
+            .collect_vec();
+
+        // Place origin of mode in first place (which will be Unison)
+        int_intervals.rotate_left(mode as usize);
+
+        // Convert back to intervals
+        let new_intervals: Vec<Interval> = int_intervals
+            .into_iter()
+            .filter_map(|i| num::FromPrimitive::from_u32(i as u32))
+            .collect_vec();
+
+        Self::new(self.root, new_intervals)
+    }
+
     /// Get major scale from root Note
     pub fn major(root: Note) -> Self {
         Self::new(root, Self::MAJOR.to_vec())
@@ -106,6 +141,7 @@ impl Scale {
         Chord::new(self.build_by_steps(6, 2, len))
     }
 
+    /// Build notes of scale from intervals and steps
     fn build_by_steps(&self, root: usize, step: usize, length: usize) -> Vec<Note> {
         // We add all intervals of the scale one octave higher for chord creation
         let mut intervals_octave_up: Vec<Interval> = self
@@ -211,7 +247,7 @@ mod tests {
     #[test]
     fn minor() {
         let root = Note::try_from("A0").unwrap();
-        let major_scale = Scale::minor(root);
+        let minor_scale = Scale::minor(root);
         let a_minor_scale = [
             Letter::A,
             Letter::B,
@@ -222,7 +258,25 @@ mod tests {
             Letter::G,
         ];
         for i in 0..7 {
-            assert_eq!(major_scale.notes()[i as usize].letter, a_minor_scale[i]);
+            assert_eq!(minor_scale.notes()[i as usize].letter, a_minor_scale[i]);
+        }
+    }
+
+    #[test]
+    fn modes() {
+        let root = Note::try_from("C0").unwrap();
+        let dorian_scale = Scale::major(root).mode(2);
+        let c_dorian_scale = [
+            Letter::C,
+            Letter::D,
+            Letter::Eb,
+            Letter::F,
+            Letter::G,
+            Letter::A,
+            Letter::Bb,
+        ];
+        for i in 0..7 {
+            assert_eq!(dorian_scale.notes()[i as usize].letter, c_dorian_scale[i]);
         }
     }
 }

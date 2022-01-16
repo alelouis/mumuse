@@ -120,14 +120,31 @@ mod tests {
     use super::*;
     use crate::music::common::Letter;
 
-    /// TODO
-    /// - [ ] Inversion tests
-    /// - [ ] Transpose tests
+    /// Chord inversion
+    #[test]
+    fn inversion() {
+        let chord = Chord::from(vec!["C0", "E1", "G2"]);
+        let inversion = chord.invert(1);
+        assert_eq!(inversion.notes[0].letter, Letter::E);
+        assert_eq!(inversion.notes[1].letter, Letter::G);
+        assert_eq!(inversion.notes[2].letter, Letter::C);
+        assert_eq!(inversion.notes[2].octave, 1);
+    }
+
+    /// Chord transposition test with Interval
+    #[test]
+    fn transposition() {
+        let chord = Chord::from(vec!["C0", "E1", "G2"]);
+        let transposed = chord - Interval::Octave;
+        assert_eq!(transposed.notes[0].octave, -1);
+        assert_eq!(transposed.notes[1].octave, 0);
+        assert_eq!(transposed.notes[2].octave, 1);
+    }
 
     /// Chord creation from string
     #[test]
-    fn chord_from_str() {
-        let chord = Chord::from(vec!["C0", "E1", "G2", "U2"]);
+    fn from_str() {
+        let chord = Chord::from(vec!["C0", "E1", "G2", "U2"]); // unknown is ignored
         assert_eq!(chord.notes[0].letter, Letter::C);
         assert_eq!(chord.notes[1].letter, Letter::E);
         assert_eq!(chord.notes[2].letter, Letter::G);
@@ -135,7 +152,7 @@ mod tests {
 
     /// Chord optimal voice leading
     #[test]
-    fn chord_transition() {
+    fn transition() {
         let from = Chord::from(vec!["C4", "E4", "G4", "B4"]);
         let target = Chord::from(vec!["E4", "G4", "B4", "D5"]);
         let voiceleaded = from.voicelead_to(&target).unwrap();
