@@ -1,7 +1,11 @@
 //! Letter and octave
 
+use itertools::Itertools;
+
 use crate::messages::Data;
 use crate::music::common::{find_letter_idx, Interval, Letter, KEYBOARD};
+use crate::music::common::Interval::*;
+use crate::music::chord::Chord;
 use std::{fmt, ops};
 
 /// Note abstraction with letter and octave
@@ -15,6 +19,28 @@ impl Note {
     /// Construct Note from Letter and octave
     pub fn new(letter: Letter, octave: i8) -> Self {
         Note { letter, octave }
+    }
+
+    /// Create Chord with self as root note
+    pub fn chord(&self, s: &str) -> Chord {
+        let intervals = match s {
+            "maj" => vec![Unison, MajorThird, Fifth],
+            "min" => vec![Unison, MinorThird, Fifth],
+            "dim" => vec![Unison, MinorThird, Tritone],
+            "aug" => vec![Unison, MajorThird, MinorSixth],
+            "maj6" =>  vec![Unison, MajorThird, Fifth, MajorSixth],
+            "min6" => vec![Unison, MinorThird, Fifth, MajorSixth],
+            "maj7" =>  vec![Unison, MajorThird, Fifth, MajorSeventh],
+            "min7" => vec![Unison, MinorThird, Fifth, MinorSeventh],
+            "dom7" => vec![Unison, MajorThird, Fifth, MinorSeventh],
+            "aug7" =>  vec![Unison, MajorThird, MinorSixth, MajorSeventh],
+            "dim7" => vec![Unison, MinorThird, Tritone, MajorSixth],
+            "minmaj7" => vec![Unison, MinorThird, Fifth, MajorSeventh],
+            "halfdim7" => vec![Unison, MinorThird, Tritone, MinorSeventh],
+            _ =>  vec![Unison]
+        };
+        let notes = intervals.iter().map(|interval| *self + *interval).collect_vec();
+        Chord::new(notes)
     }
 
     /// Compute distance in semitones between two notes

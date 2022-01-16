@@ -15,6 +15,12 @@ fn main() {
     let chord_from_notes = Chord::new(notes);
     println!("From Note vector : {}", chord_from_notes);
 
+
+    // Chord from Note
+    let note = Note::try_from("C3").unwrap();
+    let chord = note.chord("major");
+    println!("Note to Chord : {chord}");
+
     // Inversion
     let first_inv = chord_from_str.invert(1);
     let second_inv = chord_from_str.invert(2);
