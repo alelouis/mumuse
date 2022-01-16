@@ -4,6 +4,8 @@
 ![license](https://img.shields.io/github/last-commit/alelouis/mumuse)
 [![doc.rs](https://img.shields.io/badge/doc.rs-mumuse-red)](https://docs.rs/mumuse/latest/mumuse/)
 [![crates.io](https://img.shields.io/badge/crates.io-mumuse-red)](https://crates.io/crates/mumuse)
+![rustc](https://img.shields.io/badge/rustc-%3E%201.58.0-important)
+
 
 
 Small music theory library with MIDI capabilities written in Rust *(wip)*.  
