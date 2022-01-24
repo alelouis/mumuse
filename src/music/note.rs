@@ -9,7 +9,7 @@ use crate::music::chord::Chord;
 use std::{fmt, ops};
 
 /// Note abstraction with letter and octave
-#[derive(Debug, Clone, Copy, Default)]
+#[derive(Debug, Clone, Copy, Default, PartialEq)]
 pub struct Note {
     pub letter: Letter,
     pub octave: i8,
