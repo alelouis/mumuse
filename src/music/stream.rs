@@ -1,4 +1,4 @@
-//! Collection of Notes
+//! Stream of notes
 
 use std::collections::HashMap;
 use crate::music::note::Note;
