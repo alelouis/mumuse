@@ -14,6 +14,7 @@ pub enum Event {
     NoteOff(Note)
 }
 
+/// Temporal arrangement of notes
 impl Stream {
     fn new() -> Self {
         Self {

@@ -5,3 +5,4 @@ pub mod common;
 pub mod note;
 pub mod scale;
 pub mod stream;
+pub mod time;
