@@ -1,28 +1,31 @@
-use itertools::Itertools;
+//! Time references
+
+// TODO: Implement + operator for Time
 
 /// Time signature
-#[derive(Debug, Default, Clone)]
+#[derive(Debug, Default, Clone, Hash, PartialEq, Eq)]
 pub struct Meter {
     upper: u8,
     lower: u8,
 }
 
 /// Time reference
-#[derive(Debug, Default, Clone)]
+#[derive(Debug, Default, Clone, Hash, PartialEq, Eq)]
 pub struct Time {
     meter: Meter,
     stamp: String,
     divisions: [u8; 4]
 }
 
-
 impl Meter {
+    /// Constructor with time signature
     pub fn new(upper: u8, lower: u8) -> Self {
         Self { upper, lower }
     }
 }
 
 impl Time {
+    /// Constructor with stamp, default Meter 4/4
     pub fn new(stamp: String) -> Self {
         let divisions = Self::parse_stamp(&stamp, &Meter::new(4, 4));
         Self {
@@ -32,6 +35,7 @@ impl Time {
         }
     }
 
+    /// Constructor with Meter
     pub fn with_meter(meter: Meter, stamp: String) -> Self {
         let divisions = Self::parse_stamp(&stamp, &meter);
         Self { 
@@ -41,6 +45,7 @@ impl Time {
         }
     }
 
+    /// Parse x.x.x.x String stamp into divisions array
     fn parse_stamp(stamp: &String, meter: &Meter) -> [u8; 4] {
         let mut r_div = stamp.split('.');
         let mut divisions = [0; 4];

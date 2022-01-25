@@ -1,5 +1,8 @@
 //! Stream of notes
 
+// TODO: Change events time ref from u32 to Time
+// TODO: Write unit tests
+
 use std::collections::HashMap;
 use crate::music::note::Note;
 
@@ -16,14 +19,14 @@ pub enum Event {
 
 /// Temporal arrangement of notes
 impl Stream {
-    fn new() -> Self {
+    pub fn new() -> Self {
         Self {
             events: HashMap::new(),
         }
     }
 
     /// Adds event to stream
-    fn add_event(&mut self, time: u32, event: Event) {
+    pub fn add_event(&mut self, time: u32, event: Event) {
         match self.events.get_mut(&time) {
             Some(v) => v.push(event),
             None => {self.events.insert(time, vec![event]);}
@@ -31,7 +34,7 @@ impl Stream {
     }
 
     /// Adds note to stream (NoteOn and NoteOff)
-    fn add_note(&mut self, time: u32, duration: u32, note: Note) {
+    pub fn add_note(&mut self, time: u32, duration: u32, note: Note) {
         self.add_event(time, Event::NoteOn(note));
         self.add_event(time+duration, Event::NoteOff(note));
     }
@@ -47,6 +50,6 @@ mod tests {
         let mut stream: Stream = Stream::new();
         stream.add_note(0, 2, Note::try_from("A3").unwrap());
         stream.add_note(0, 3, Note::try_from("G3").unwrap());
-        println!("{:?}", stream);
+        assert_eq!(stream.events.get(&0).unwrap().len(), 2);
     }
 }
