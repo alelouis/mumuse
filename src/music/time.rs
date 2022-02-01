@@ -20,64 +20,21 @@
 // Attach time to note ? Or convert time to seconds at eval time ?
 // I don't know yet
 
-
-/// Time signature
-#[derive(Debug, Default, Clone, Hash, PartialEq, Eq)]
-pub struct Meter {
-    upper: u8,
-    lower: u8,
-}
-
 /// Time reference
-#[derive(Debug, Default, Clone, Hash, PartialEq, Eq)]
+#[derive(Debug, Clone, Copy)]
 pub struct Time {
-    meter: Meter,
-    stamp: String,
-    divisions: [u8; 4]
-}
-
-impl Meter {
-    /// Constructor with time signature
-    pub fn new(upper: u8, lower: u8) -> Self {
-        Self { upper, lower }
-    }
+    pub bar: u32,
+    pub divisions: u32,
+    pub position: u32
 }
 
 impl Time {
-    /// Constructor with stamp, default Meter 4/4
-    pub fn new(stamp: String) -> Self {
-        let divisions = Self::parse_stamp(&stamp, &Meter::new(4, 4));
-        Self {
-            meter: Meter::new(4, 4),
-            stamp,
-            divisions
+    pub fn new(bar: u32, divisions: u32, position: u32) -> Self {
+        Time {
+            bar, 
+            divisions,
+            position
         }
-    }
-
-    /// Constructor with Meter
-    pub fn with_meter(meter: Meter, stamp: String) -> Self {
-        let divisions = Self::parse_stamp(&stamp, &meter);
-        Self { 
-            meter, 
-            stamp,
-            divisions
-        }
-    }
-
-    /// Parse x.x.x.x String stamp into divisions array
-    fn parse_stamp(stamp: &String, meter: &Meter) -> [u8; 4] {
-        let mut r_div = stamp.split('.');
-        let mut divisions = [0; 4];
-        for div in 0..4 {
-            divisions[div] = match r_div.next() {
-                Some(n) => n.parse::<u8>().unwrap_or(1),
-                None => 0
-            }
-        }
-        divisions[1] = divisions[1]%(meter.upper);
-        divisions[2] = divisions[2]%4;
-        divisions[3] = divisions[3]%4;
-        divisions
     }
 }
 
@@ -86,11 +43,8 @@ mod tests {
     use super::*;
 
     #[test]
-    fn autofill() {
-        let time: Time = Time::new(String::from("1"));
-        assert_eq!(time.divisions[0], 1);
-        assert_eq!(time.divisions[1], 0);
-        assert_eq!(time.divisions[2], 0);
-        assert_eq!(time.divisions[3], 0);
+    fn construct() {
+        let time: Time = Time::new(1, 16, 1);
+        assert_eq!(time.divisions, 16);
     }
 }

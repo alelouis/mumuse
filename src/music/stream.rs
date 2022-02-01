@@ -3,15 +3,15 @@
 // TODO: Change events time ref from u32 to Time
 // TODO: Write unit tests
 
-use std::collections::HashMap;
 use crate::music::note::Note;
+use crate::music::time::Time;
 
 #[derive(Debug, Default, Clone)]
 pub struct Stream {
-    pub events: HashMap<u32, Vec<Event>>,
+    pub events: Vec<(Time, Event)>,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Copy)]
 pub enum Event {
     NoteOn(Note),
     NoteOff(Note)
@@ -21,22 +21,24 @@ pub enum Event {
 impl Stream {
     pub fn new() -> Self {
         Self {
-            events: HashMap::new(),
+            events: vec![],
         }
     }
 
     /// Adds event to stream
-    pub fn add_event(&mut self, time: u32, event: Event) {
-        match self.events.get_mut(&time) {
-            Some(v) => v.push(event),
-            None => {self.events.insert(time, vec![event]);}
-        }
+    pub fn add_event(&mut self, time: Time, event: Event) {
+        self.events.push((time, event));
     }
 
-    /// Adds note to stream (NoteOn and NoteOff)
-    pub fn add_note(&mut self, time: u32, duration: u32, note: Note) {
-        self.add_event(time, Event::NoteOn(note));
-        self.add_event(time+duration, Event::NoteOff(note));
+    pub fn to_seconds(&self, bpm: f64, bpb: u32) -> Vec<(f64, Event)>{
+        let bar_duration = (bpb as f64) * 60. / bpm;
+        let mut events_seconds: Vec<(f64, Event)> = vec![];
+        for (time, event) in self.events.iter() {
+            let time_seconds = 
+                bar_duration * ((time.bar-1) as f64 + (time.position-1) as f64 / time.divisions as f64);
+            events_seconds.push((time_seconds, *event));
+        }
+        events_seconds
     }
 }
 
@@ -46,10 +48,24 @@ mod tests {
     use super::*;
 
     #[test]
-    fn insert() {
+    fn add_event() {
         let mut stream: Stream = Stream::new();
-        stream.add_note(0, 2, Note::try_from("A3").unwrap());
-        stream.add_note(0, 3, Note::try_from("G3").unwrap());
-        assert_eq!(stream.events.get(&0).unwrap().len(), 2);
+        let time: Time = Time::new(1, 16, 1);
+        let note: Note = Note::try_from("A3").unwrap();
+        stream.add_event(time, Event::NoteOn(note));
+        assert_eq!(stream.events.get(0).unwrap().0.bar, 1);
+        assert_eq!(stream.events.get(0).unwrap().0.divisions, 16);
+        assert_eq!(stream.events.get(0).unwrap().0.position, 1);
+    }
+
+    #[test]
+    fn to_time() {
+        let mut stream: Stream = Stream::new();
+        let time: Time = Time::new(1, 4, 2);
+        let note: Note = Note::try_from("A3").unwrap();
+        stream.add_event(time, Event::NoteOn(note));
+        let time_stream = stream.to_seconds(120.0, 4);
+        assert_eq!(time_stream[0].0, 0.5);
+        println!("{:?}", time_stream);
     }
 }
