@@ -17,7 +17,7 @@ pub enum Event {
     NoteOff(Note)
 }
 
-/// Temporal arrangement of notes
+/// Temporal arrangement of events
 impl Stream {
     pub fn new() -> Self {
         Self {
@@ -30,6 +30,7 @@ impl Stream {
         self.events.push((time, event));
     }
 
+    /// Converts Events to seconds timeline
     pub fn to_seconds(&self, bpm: f64, bpb: u32) -> Vec<(f64, Event)>{
         let bar_duration = (bpb as f64) * 60. / bpm;
         let mut events_seconds: Vec<(f64, Event)> = vec![];
@@ -40,6 +41,9 @@ impl Stream {
         }
         events_seconds
     }
+
+    // Play should be done with Tokio async tick await
+    // https://docs.rs/tokio/1.9.0/tokio/time/enum.MissedTickBehavior.html
 }
 
 
