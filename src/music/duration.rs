@@ -1,6 +1,7 @@
-#[derive(Clone, Copy, Debug)]
+//! Time duration consisting in a number of a given bar divisions
 
 /// Time duration consisting in a number of a given bar divisions
+#[derive(Clone, Copy, Debug)]
 pub struct Duration {
     pub divisions: u32,
     pub length: u32,

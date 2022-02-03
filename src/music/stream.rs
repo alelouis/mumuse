@@ -9,13 +9,6 @@ use itertools::Itertools;
 use midir::MidiOutputConnection;
 use tokio::time::{self, Duration as TDuration};
 
-/// Midi command
-#[derive(Clone, Copy, Debug)]
-pub enum Command {
-    NoteOn(Note),
-    NoteOff(Note),
-}
-
 /// Temporal arrangement of events
 #[derive(Debug, Default, Clone)]
 pub struct Stream {
