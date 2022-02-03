@@ -20,5 +20,5 @@ fn main() {
     let mut conn_out = midi::get_output_connection("Virtual Midi Bus 1".to_string());
     whole_tone
         .iter()
-        .for_each(|note| note.send_midi(&mut conn_out, 100, 64));
+        .for_each(|note| note.send_midi_with_duration(&mut conn_out, 100, 64));
 }

@@ -11,11 +11,12 @@ use std::time::Duration;
 
 /// Trait for sending Music struct to Midi
 pub trait MidiSend {
-    fn send_midi(&self, conn_out: &mut MidiOutputConnection, duration: u64, velocity: u8);
+    fn send_midi_with_duration(&self, conn_out: &mut MidiOutputConnection, duration: u64, velocity: u8);
+    fn send_midi(&self, status: Status, conn_out: &mut MidiOutputConnection);
 }
 
 impl MidiSend for Note {
-    fn send_midi(&self, conn_out: &mut MidiOutputConnection, duration: u64, velocity: u8) {
+    fn send_midi_with_duration(&self, conn_out: &mut MidiOutputConnection, duration: u64, velocity: u8) {
         let mut kn: u8 = 0;
         if let Data::KeyNumber(x) = messages::from_note(self) {
             kn = x;
@@ -24,10 +25,19 @@ impl MidiSend for Note {
         sleep(Duration::from_millis(duration));
         let _ = conn_out.send(&[Status::NoteOff as u8, kn, velocity]);
     }
+
+    fn send_midi(&self, status : Status, conn_out: &mut MidiOutputConnection) {
+        let mut kn: u8 = 0;
+        if let Data::KeyNumber(x) = messages::from_note(self) {
+            kn = x;
+        };
+        let _ = conn_out.send(&[status as u8, kn, 255]);
+    }
+
 }
 
 impl MidiSend for Chord {
-    fn send_midi(&self, conn_out: &mut MidiOutputConnection, duration: u64, velocity: u8) {
+    fn send_midi_with_duration(&self, conn_out: &mut MidiOutputConnection, duration: u64, velocity: u8) {
         for note in &self.notes {
             let mut kn: u8 = 0;
             if let Data::KeyNumber(x) = messages::from_note(note) {
@@ -42,6 +52,16 @@ impl MidiSend for Chord {
                 kn = x;
             };
             let _ = conn_out.send(&[0x80, kn, velocity]);
+        }
+    }
+
+    fn send_midi(&self, status: Status, conn_out: &mut MidiOutputConnection) {
+        for note in &self.notes {
+            let mut kn: u8 = 0;
+            if let Data::KeyNumber(x) = messages::from_note(note) {
+                kn = x;
+            };
+            let _ = conn_out.send(&[status as u8, kn, 255]);
         }
     }
 }

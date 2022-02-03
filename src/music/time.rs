@@ -7,10 +7,10 @@
 // Define subdivisions of bar, for example 3 for triplet grid
 // Define nth subdivision
 
-// Examples : 
+// Examples :
 // third triplet in second bar
 // Time(2, 3, 3)
-// 
+//
 // fourth sixteenth note in first bar
 // Time(1, 16, 4)
 //
@@ -21,19 +21,19 @@
 // I don't know yet
 
 /// Time reference
-#[derive(Debug, Clone, Copy)]
+#[derive(Clone, Debug)]
 pub struct Time {
     pub bar: u32,
     pub divisions: u32,
-    pub position: u32
+    pub position: u32,
 }
 
 impl Time {
     pub fn new(bar: u32, divisions: u32, position: u32) -> Self {
         Time {
-            bar, 
+            bar,
             divisions,
-            position
+            position,
         }
     }
 }

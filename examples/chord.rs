@@ -15,7 +15,6 @@ fn main() {
     let chord_from_notes = Chord::new(notes);
     println!("From Note vector : {}", chord_from_notes);
 
-
     // Chord from Note
     let note = Note::try_from("C3").unwrap();
     let chord = note.chord("major");

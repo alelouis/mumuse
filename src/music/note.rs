@@ -3,13 +3,13 @@
 use itertools::Itertools;
 
 use crate::messages::Data;
-use crate::music::common::{find_letter_idx, Interval, Letter, KEYBOARD};
-use crate::music::common::Interval::*;
 use crate::music::chord::Chord;
+use crate::music::common::Interval::*;
+use crate::music::common::{find_letter_idx, Interval, Letter, KEYBOARD};
 use std::{fmt, ops};
 
 /// Note abstraction with letter and octave
-#[derive(Debug, Clone, Copy, Default, PartialEq)]
+#[derive(Debug, Clone, Copy, Default)]
 pub struct Note {
     pub letter: Letter,
     pub octave: i8,
@@ -30,18 +30,21 @@ impl Note {
             "min" => vec![Unison, MinorThird, Fifth],
             "dim" => vec![Unison, MinorThird, Tritone],
             "aug" => vec![Unison, MajorThird, MinorSixth],
-            "maj6" =>  vec![Unison, MajorThird, Fifth, MajorSixth],
+            "maj6" => vec![Unison, MajorThird, Fifth, MajorSixth],
             "min6" => vec![Unison, MinorThird, Fifth, MajorSixth],
-            "maj7" =>  vec![Unison, MajorThird, Fifth, MajorSeventh],
+            "maj7" => vec![Unison, MajorThird, Fifth, MajorSeventh],
             "min7" => vec![Unison, MinorThird, Fifth, MinorSeventh],
             "dom7" => vec![Unison, MajorThird, Fifth, MinorSeventh],
-            "aug7" =>  vec![Unison, MajorThird, MinorSixth, MajorSeventh],
+            "aug7" => vec![Unison, MajorThird, MinorSixth, MajorSeventh],
             "dim7" => vec![Unison, MinorThird, Tritone, MajorSixth],
             "minmaj7" => vec![Unison, MinorThird, Fifth, MajorSeventh],
             "halfdim7" => vec![Unison, MinorThird, Tritone, MinorSeventh],
-            _ =>  vec![Unison]
+            _ => vec![Unison],
         };
-        let notes = intervals.iter().map(|interval| *self + *interval).collect_vec();
+        let notes = intervals
+            .iter()
+            .map(|interval| *self + *interval)
+            .collect_vec();
         Chord::new(notes)
     }
 
@@ -170,7 +173,10 @@ mod tests {
             let letter: Letter = num::FromPrimitive::from_u32((24 - i) % 12).unwrap();
             let note = c - interval;
             assert_eq!(note.letter, letter);
-            assert_eq!(note.octave as i8, 1 - (i as i8) / 12 + if i%12 == 0 {1} else {0});
+            assert_eq!(
+                note.octave as i8,
+                1 - (i as i8) / 12 + if i % 12 == 0 { 1 } else { 0 }
+            );
         }
     }
 

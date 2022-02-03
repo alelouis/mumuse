@@ -246,7 +246,7 @@ impl Midi {
 }
 
 /// Status is determined by first byte of midi frame
-#[derive(Debug)]
+#[derive(Clone, Copy, Debug)]
 #[allow(dead_code)]
 pub enum Status {
     NoteOff = 0x80,               // 8x
