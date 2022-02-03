@@ -18,6 +18,6 @@ fn main() {
     // midi::show_output_ports(); // show output ports
     let mut conn_out = midi::get_output_connection("Virtual Midi Bus 1".to_string());
     for chord in chords {
-        chord.send_midi(&mut conn_out, 500, 64);
+        chord.send_midi_with_duration(&mut conn_out, 500, 64);
     }
 }

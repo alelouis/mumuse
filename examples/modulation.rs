@@ -16,6 +16,6 @@ fn main() {
         let chords = vec![scale.two(3), scale.five(3), scale.one(3)];
         chords
             .iter()
-            .for_each(|chord| chord.send_midi(&mut conn_out, 500, 64));
+            .for_each(|chord| chord.send_midi_with_duration(&mut conn_out, 500, 64));
     }
 }

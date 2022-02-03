@@ -17,7 +17,7 @@ pub const KEYBOARD: [Letter; 12] = [
 ];
 
 /// Letters to describe notes
-#[derive(Debug, PartialEq, Clone, Copy, FromPrimitive)]
+#[derive(Debug, Eq, PartialEq, Clone, Copy, FromPrimitive)]
 pub enum Letter {
     C,
     Db,

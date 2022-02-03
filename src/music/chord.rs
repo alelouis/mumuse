@@ -28,6 +28,8 @@ impl Chord {
         Self::new(notes)
     }
 
+    // TODO pub fn intervals()
+
     /// Finds optimal minimum movement chord to target
     pub fn voicelead_to(&self, target: &Self) -> Option<Self> {
         let mut dist_vec: Vec<Vec<Vec<u8>>> = vec![];
