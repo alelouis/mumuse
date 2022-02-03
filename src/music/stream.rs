@@ -1,12 +1,13 @@
 //! Stream of notes
 
+use crate::messages::Status;
 use crate::midi::MidiSend;
+use crate::music::duration::Duration;
 use crate::music::note::Note;
 use crate::music::time::Time;
-use crate::messages::Status;
 use itertools::Itertools;
-use tokio::time::{self, Duration};
 use midir::MidiOutputConnection;
+use tokio::time::{self, Duration as TDuration};
 
 /// Midi command
 #[derive(Clone, Copy, Debug)]
@@ -26,12 +27,12 @@ pub struct Stream {
 pub struct Event {
     time: Time,
     status: Status,
-    note: Note
+    note: Note,
 }
 
 impl Event {
     pub fn new(time: Time, status: Status, note: Note) -> Self {
-        Event { time, status, note}
+        Event { time, status, note }
     }
 }
 
@@ -46,15 +47,19 @@ impl Stream {
         self.events.push(event);
     }
 
+    /// Adds note to stream
+    pub fn add_note(&mut self, note: Note, time: Time, duration: Duration) {
+        println!("{:?} + {:?} = {:?}", time, duration, time + duration);
+        self.events.push(Event::new(time, Status::NoteOn, note));
+        self.events
+            .push(Event::new(time + duration, Status::NoteOff, note))
+    }
+
     /// Converts Events to seconds timeline
     pub fn to_seconds(&self, bpm: f64, bpb: u32) -> Vec<(f64, Status, Note)> {
-        let bar_duration = (bpb as f64) * 60. / bpm;
         let mut events_seconds: Vec<(f64, Status, Note)> = vec![];
         for event in self.events.iter() {
-            let time_seconds = bar_duration
-                * ((event.time.bar - 1) as f64
-                    + (event.time.position - 1) as f64 / event.time.divisions as f64);
-            events_seconds.push((time_seconds, event.status, event.note));
+            events_seconds.push((event.time.to_seconds(bpm, bpb), event.status, event.note));
         }
         // Sort by time
         events_seconds.sort_by(|a, b| a.0.partial_cmp(&b.0).unwrap());
@@ -64,13 +69,16 @@ impl Stream {
     /// Plays stream of events in real time
     #[tokio::main]
     pub async fn play(&self, conn_out: &mut MidiOutputConnection, bpm: f64, bpb: u32) {
-        let events_seconds = self.to_seconds(bpm, bpb);
+        let events_seconds = self.to_seconds(bpm, bpb); // Vector of events with seconds unit
         let interval_time = 10.0; // in ms
-        let mut played_events = 0;
-        let mut n_tick = 0;
-        let total_events = events_seconds.len();
-        let mut interval = time::interval(Duration::from_millis(interval_time as u64));
+        let mut played_events = 0; // Count of sent event
+        let mut n_tick = 0; // Tick number counter
+        let total_events = events_seconds.len(); // Number of total events to send
+        let mut interval = time::interval(TDuration::from_millis(interval_time as u64)); 
 
+        // Async function to send midi events with constant tick time
+        // Constant tick time is managed by Tokio interval ticking with Burst missed tick strategy
+        // Tick time is set to 10ms here, adjust for more / less precision in event timing
         async fn play_events(
             conn_out: &mut MidiOutputConnection,
             n_tick: usize,
@@ -79,10 +87,17 @@ impl Stream {
         ) -> usize {
             let last_tick_time = n_tick as f64 * interval_time / 1000.0; // in sec
             let next_tick_time = (n_tick + 1) as f64 * interval_time / 1000.0; // in sec
+
+            // Filter out events that to not belong to current tick window
+            // Could be smarter by removing past events
             let current_events = events_seconds
                 .iter()
                 .filter(|event| (event.0 >= last_tick_time) && (event.0 < next_tick_time))
                 .collect_vec();
+
+            
+            // Send events, currently only NoteOn and Note Off are handled.
+            // Add match arms for additional case handling
             for current_event in &current_events {
                 match current_event.1 {
                     Status::NoteOn => current_event.2.send_midi(Status::NoteOn, conn_out),
@@ -95,6 +110,7 @@ impl Stream {
         }
 
         loop {
+            // We tick until all events are sent
             interval.tick().await;
             played_events += play_events(conn_out, n_tick, interval_time, &events_seconds).await;
             if total_events == played_events {
