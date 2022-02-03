@@ -77,8 +77,8 @@ impl Stream {
             interval_time: f64,
             events_seconds: &Vec<(f64, Status, Note)>,
         ) -> usize {
-            let last_tick_time = n_tick as f64 * interval_time / 1000.0;
-            let next_tick_time = (n_tick + 1) as f64 * interval_time / 1000.0;
+            let last_tick_time = n_tick as f64 * interval_time / 1000.0; // in sec
+            let next_tick_time = (n_tick + 1) as f64 * interval_time / 1000.0; // in sec
             let current_events = events_seconds
                 .iter()
                 .filter(|event| (event.0 >= last_tick_time) && (event.0 < next_tick_time))

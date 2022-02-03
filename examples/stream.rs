@@ -9,6 +9,8 @@ fn main() {
     let mut conn_out = midi::get_output_connection("Virtual Midi Bus 1".to_string());
 
     // Constructing event stream
+    // Time interface is (bar, subdivisions, nth subdivision)
+    
     let note = Note::try_from("A3").unwrap();
     stream.add_event(Event::new(Time::new(1, 4, 1), Status::NoteOn, note));
     stream.add_event(Event::new(Time::new(1, 4, 2), Status::NoteOff, note));
@@ -26,5 +28,5 @@ fn main() {
     stream.add_event(Event::new(Time::new(2, 4, 1), Status::NoteOff, note));
 
     // Real time play of events
-    stream.play(&mut conn_out, 120.0, 4);
+    stream.play(&mut conn_out, 120.0, 4); // midi_connection, beat per minute, beats per bar
 }
