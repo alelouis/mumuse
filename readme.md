@@ -99,8 +99,8 @@ let secondary_dominants = (1..6).map(|degree| get_five(&major_scale, degree+1));
 // midi::show_output_ports(); // show output ports
 let mut conn_out = midi::get_output_connection("Virtual Midi Bus 1".to_string());
 for (chord, second) in chords.zip(secondary_dominants) {
-    chord.send_midi(&mut conn_out, 500, 64);
-    second.send_midi(&mut conn_out, 500, 64);
+    chord.send_midi_with_duration(&mut conn_out, 500, 64);
+    second.send_midi_with_duration(&mut conn_out, 500, 64);
 ```
 ---
 
