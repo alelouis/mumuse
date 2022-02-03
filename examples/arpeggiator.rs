@@ -23,6 +23,6 @@ fn main() {
         let descend = chord.notes.clone().into_iter().rev();
         ascend
             .chain(descend)
-            .for_each(|n| n.send_midi(&mut conn_out, 100, 64));
+            .for_each(|n| n.send_midi_with_duration(&mut conn_out, 100, 64));
     }
 }
