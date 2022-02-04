@@ -1,4 +1,3 @@
-use mumuse::messages::Status;
 use mumuse::midi;
 use mumuse::music::note::Note;
 use mumuse::music::stream::Stream;

@@ -1,7 +1,6 @@
 //! Letter and octave
 
 use itertools::Itertools;
-
 use crate::messages::Data;
 use crate::music::chord::Chord;
 use crate::music::common::Interval::*;
@@ -16,12 +15,36 @@ pub struct Note {
 }
 
 impl Note {
-    /// Construct Note from Letter and octave
+    /// Construct Note from `Letter` and `octave`.
+    ///
+    /// The `Letter` are all letter from A to G with only flat `b` variations.
+    /// Octaves can be negatives.
+    ///
+    /// # Examples
+    ///
+    /// Basic usage:
+    ///
+    /// ```
+    /// use mumuse::music::{note::Note, common::Letter};
+    /// let n = Note::new(Letter::A, 4);
+    /// ```
     pub fn new(letter: Letter, octave: i8) -> Self {
         Note { letter, octave }
     }
 
-    /// Create Chord with self as root note
+    /// Creates Chord with `self` as root note.
+    ///
+    /// Specify by an `&str` the type of chord to build.
+    ///
+    /// # Examples
+    ///
+    /// Basic usage:
+    ///
+    /// ```
+    /// use mumuse::music::{note::Note, common::Letter};
+    /// let n = Note::new(Letter::A, 4);
+    /// let c = n.chord("maj7");
+    /// ```
     pub fn chord(&self, s: &str) -> Chord {
         let intervals = match s {
             "sus2" => vec![Unison, MajorSecond, Fifth],
@@ -48,7 +71,18 @@ impl Note {
         Chord::new(notes)
     }
 
-    /// Compute distance in semitones between two notes
+    /// Compute distance in semitones between two notes.
+    ///
+    /// # Examples
+    ///
+    /// Basic usage:
+    ///
+    /// ```
+    /// use mumuse::music::{note::Note, common::Letter};
+    /// let a = Note::new(Letter::A, 4);
+    /// let b = Note::new(Letter::B, 4);
+    /// let dist = a.dist_to(&b);
+    /// ```
     pub fn dist_to(&self, other: &Note) -> u8 {
         let octave_diff: i8 = self.octave as i8 - other.octave as i8;
         (find_letter_idx(self.letter) - find_letter_idx(other.letter) + octave_diff * 12)
@@ -58,14 +92,25 @@ impl Note {
     }
 }
 
-/// Display trait for Note
+/// Displays a `Note`
 impl fmt::Display for Note {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(f, "Note({:?}{})", self.letter, self.octave)
     }
 }
 
-/// Conversion from Data::KeyNumber
+/// Conversion from `Data::KeyNumber`.
+///
+/// # Examples
+///
+/// Basic usage:
+///
+/// ```
+/// use mumuse::messages::Data;
+/// use mumuse::music::note::Note;
+/// let kn = Data::KeyNumber(44);
+/// let n = Note::try_from(&kn);
+/// ```
 impl TryFrom<&Data> for Note {
     type Error = ();
     fn try_from(kn: &Data) -> Result<Self, Self::Error> {
@@ -79,7 +124,16 @@ impl TryFrom<&Data> for Note {
     }
 }
 
-/// Conversion from str
+/// Conversion from `&str`.
+///
+/// # Examples
+///
+/// Basic usage:
+///
+/// ```
+/// use mumuse::music::note::Note;
+/// let n = Note::try_from("A3"); // Is a Result
+/// ```
 impl TryFrom<&str> for Note {
     type Error = ();
     fn try_from(s: &str) -> Result<Self, Self::Error> {
@@ -109,6 +163,16 @@ impl TryFrom<&str> for Note {
 /// Overload operator + for Note + Interval
 impl ops::Add<Interval> for Note {
     type Output = Note;
+    /// Adds an `Interval` to a `Note`
+    ///
+    /// # Examples
+    ///
+    /// Basic usage:
+    ///
+    /// ```
+    /// use mumuse::music::{note::Note, common::{Interval, Letter}};
+    /// let n = Note::new(Letter::A, 3) + Interval::MinorSecond;
+    /// ```
     fn add(self, rhs: Interval) -> Note {
         let self_index = find_letter_idx(self.letter);
         let target_index = self_index + rhs as i8;
@@ -122,6 +186,16 @@ impl ops::Add<Interval> for Note {
 /// Overload operator - for Note - Interval
 impl ops::Sub<Interval> for Note {
     type Output = Note;
+    /// Subtracts an `Interval` to a `Note`
+    ///
+    /// # Examples
+    ///
+    /// Basic usage:
+    ///
+    /// ```
+    /// use mumuse::music::{note::Note, common::{Interval, Letter}};
+    /// let n = Note::new(Letter::A, 3) - Interval::MinorSecond;
+    /// ```
     fn sub(self, rhs: Interval) -> Note {
         let self_index = find_letter_idx(self.letter);
         let mut neg_offset = 0;
