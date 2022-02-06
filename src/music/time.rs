@@ -91,7 +91,7 @@ impl ops::Add<Duration> for Time {
         // Wrap up of time when end of bar is reached
         if new_pos > new_div {
             new_bar += new_pos / new_div;
-            new_pos = new_pos % new_div;
+            new_pos %= new_div;
         }
         Time::new(new_bar, new_div, new_pos)
     }

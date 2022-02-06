@@ -51,7 +51,22 @@ impl Scale {
         MajorSeventh,
     ];
 
-    /// Get mode n of current scale
+    /// Get mode n of current scale.
+    ///
+    /// The mode specifies the starting point of the sequence
+    /// of intervals defining the scale.
+    ///
+    /// # Examples
+    ///
+    /// Basic usage:
+    ///
+    /// ```
+    /// use mumuse::music::scale::Scale;
+    /// use mumuse::music::note::Note;
+    /// let root = Note::try_from("C0").unwrap();
+    /// let major_scale = Scale::major(root);
+    /// let ionian = major_scale.mode(1); 
+    /// ```
     pub fn mode(&self, n: i8) -> Self {
         let mut mode = n as i8 - 1;
         while mode < 0 {
@@ -87,56 +102,179 @@ impl Scale {
     }
 
     /// Get major scale from root Note
+    ///
+    /// # Examples
+    ///
+    /// Basic usage:
+    ///
+    /// ```
+    /// use mumuse::music::scale::Scale;
+    /// use mumuse::music::note::Note;
+    /// let root = Note::try_from("C0").unwrap();
+    /// let major_scale = Scale::major(root);
+    /// ```
     pub fn major(root: Note) -> Self {
         Self::new(root, Self::MAJOR.to_vec())
     }
 
     /// Get minor (natural) scale from root Note
+    ///
+    /// # Examples
+    ///
+    /// Basic usage:
+    ///
+    /// ```
+    /// use mumuse::music::scale::Scale;
+    /// use mumuse::music::note::Note;
+    /// let root = Note::try_from("C0").unwrap();
+    /// let minor_scale = Scale::minor(root);
+    /// ```
     pub fn minor(root: Note) -> Self {
         Self::new(root, Self::MINOR.to_vec())
     }
 
-    /// Get minor (harmonic) scale from root Note
+    /// get minor (harmonic) scale from root note
+    ///
+    /// # examples
+    ///
+    /// basic usage:
+    ///
+    /// ```
+    /// use mumuse::music::scale::Scale;
+    /// use mumuse::music::note::Note;
+    /// let root = Note::try_from("C4").unwrap();
+    /// let minor_harmonic_scale = Scale::minor_harmonic(root);
+    /// ```
     pub fn minor_harmonic(root: Note) -> Self {
         Self::new(root, Self::MINOR_HARMONIC.to_vec())
     }
 
-    // Chord built by degrees (degree = 1 same as self.one() call)
+    /// Build chord by degrees (degree = 1 same as self.one() call)
+    ///
+    /// Specify the number of thirds to stack (scale should be built by thirds).
+    ///
+    /// # examples
+    ///
+    /// basic usage:
+    ///
+    /// ```
+    /// use mumuse::music::scale::Scale;
+    /// use mumuse::music::note::Note;
+    /// let root = Note::try_from("A3").unwrap();
+    /// let five = Scale::major(root).by_degree(5, 3);
+    /// ```
     pub fn by_degree(&self, degree: usize, len: usize) -> Chord {
         Chord::new(self.build_by_steps(degree - 1, 2, len))
     }
 
     /// One chord built by thirds (if scale built by thirds).
+    ///
+    /// # examples
+    ///
+    /// basic usage:
+    ///
+    /// ```
+    /// use mumuse::music::scale::Scale;
+    /// use mumuse::music::note::Note;
+    /// let root = Note::try_from("A3").unwrap();
+    /// let one = Scale::major(root).one(3);
+    /// ```
     pub fn one(&self, len: usize) -> Chord {
         Chord::new(self.build_by_steps(0, 2, len))
     }
 
     /// Two chord built by thirds (if scale built by thirds).
+    ///
+    /// # examples
+    ///
+    /// basic usage:
+    ///
+    /// ```
+    /// use mumuse::music::scale::Scale;
+    /// use mumuse::music::note::Note;
+    /// let root = Note::try_from("A3").unwrap();
+    /// let two = Scale::major(root).two(3);
+    /// ```
     pub fn two(&self, len: usize) -> Chord {
         Chord::new(self.build_by_steps(1, 2, len))
     }
 
     /// Three chord built by thirds (if scale built by thirds).
+    ///
+    /// # examples
+    ///
+    /// basic usage:
+    ///
+    /// ```
+    /// use mumuse::music::scale::Scale;
+    /// use mumuse::music::note::Note;
+    /// let root = Note::try_from("A3").unwrap();
+    /// let three = Scale::major(root).three(3);
+    /// ```
     pub fn three(&self, len: usize) -> Chord {
         Chord::new(self.build_by_steps(2, 2, len))
     }
 
     /// Four chord built by thirds (if scale built by thirds).
+    ///
+    /// # examples
+    ///
+    /// basic usage:
+    ///
+    /// ```
+    /// use mumuse::music::scale::Scale;
+    /// use mumuse::music::note::Note;
+    /// let root = Note::try_from("A3").unwrap();
+    /// let four = Scale::major(root).four(3);
+    /// ```
     pub fn four(&self, len: usize) -> Chord {
         Chord::new(self.build_by_steps(3, 2, len))
     }
 
     /// Five chord built by thirds (if scale built by thirds).
+    ///
+    /// # examples
+    ///
+    /// basic usage:
+    ///
+    /// ```
+    /// use mumuse::music::scale::Scale;
+    /// use mumuse::music::note::Note;
+    /// let root = Note::try_from("A3").unwrap();
+    /// let five = Scale::major(root).five(3);
+    /// ```
     pub fn five(&self, len: usize) -> Chord {
         Chord::new(self.build_by_steps(4, 2, len))
     }
 
     /// Six chord built by thirds (if scale built by thirds).
+    ///
+    /// # examples
+    ///
+    /// basic usage:
+    ///
+    /// ```
+    /// use mumuse::music::scale::Scale;
+    /// use mumuse::music::note::Note;
+    /// let root = Note::try_from("A3").unwrap();
+    /// let six = Scale::major(root).six(3);
+    /// ```
     pub fn six(&self, len: usize) -> Chord {
         Chord::new(self.build_by_steps(5, 2, len))
     }
 
     /// Seven chord built by thirds (if scale built by thirds).
+    ///
+    /// # examples
+    ///
+    /// basic usage:
+    ///
+    /// ```
+    /// use mumuse::music::scale::Scale;
+    /// use mumuse::music::note::Note;
+    /// let root = Note::try_from("A3").unwrap();
+    /// let seven = Scale::major(root).seven(3);
+    /// ```
     pub fn seven(&self, len: usize) -> Chord {
         Chord::new(self.build_by_steps(6, 2, len))
     }
@@ -167,7 +305,19 @@ impl Scale {
             .collect_vec()
     }
 
-    /// Get Note vector from Scale
+    /// Get `Note` vector from Scale
+    ///
+    /// # examples
+    ///
+    /// basic usage:
+    ///
+    /// ```
+    /// use mumuse::music::scale::Scale;
+    /// use mumuse::music::note::Note;
+    /// let root = Note::try_from("A3").unwrap();
+    /// let scale = Scale::major(root);
+    /// let notes = scale.notes();
+    /// ```
     pub fn notes(&self) -> Vec<Note> {
         self.intervals
             .clone()

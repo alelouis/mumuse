@@ -12,12 +12,35 @@ pub struct Chord {
 }
 
 impl Chord {
-    /// Construct from Note vector
+    /// Creates a new `Chord` from a vector of `Note`.
+    ///
+    /// # Examples
+    ///
+    /// Basic usage:
+    ///
+    /// ```
+    /// use mumuse::music::chord::Chord;
+    /// use mumuse::music::note::Note;
+    /// let n = Note::try_from("A3").unwrap();
+    /// let t = Chord::new(vec![n, n]);
+    /// ```
     pub fn new(notes: Vec<Note>) -> Self {
         Self { notes }
     }
 
-    // Chord inversion
+    /// Invert a chord in natural order.
+    ///
+    /// Inversion wrap around the length of the chord.
+    ///
+    /// # Examples
+    ///
+    /// Basic usage:
+    ///
+    /// ```
+    /// use mumuse::music::note::Note;
+    /// let n = Note::try_from("A3").unwrap();
+    /// let c = n.chord("maj").invert(2);
+    /// ```
     pub fn invert(&self, inversion: usize) -> Self {
         let mut notes = self.notes.clone();
         let len = self.notes.len();
@@ -54,6 +77,17 @@ impl fmt::Display for Chord {
 }
 
 /// Overload operator + for Chord + Interval
+/// # Examples
+///
+/// Basic usage:
+///
+/// ```
+/// use mumuse::music::note::Note;
+/// use mumuse::music::common::Interval;
+/// let n = Note::try_from("A3").unwrap();
+/// let c = n.chord("maj");
+/// let c_ = c + Interval::MinorSecond;
+/// ```
 impl ops::Add<Interval> for Chord {
     type Output = Chord;
     fn add(self, rhs: Interval) -> Chord {
