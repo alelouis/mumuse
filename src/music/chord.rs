@@ -77,6 +77,7 @@ impl fmt::Display for Chord {
 }
 
 /// Overload operator + for Chord + Interval
+///
 /// # Examples
 ///
 /// Basic usage:
@@ -96,6 +97,18 @@ impl ops::Add<Interval> for Chord {
 }
 
 /// Overload operator - for Chord - Interval
+///
+/// # Examples
+///
+/// Basic usage:
+///
+/// ```
+/// use mumuse::music::note::Note;
+/// use mumuse::music::common::Interval;
+/// let n = Note::try_from("A3").unwrap();
+/// let c = n.chord("maj");
+/// let c_ = c - Interval::MinorSecond;
+/// ```
 impl ops::Sub<Interval> for Chord {
     type Output = Chord;
     fn sub(self, rhs: Interval) -> Chord {
