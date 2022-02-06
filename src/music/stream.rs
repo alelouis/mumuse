@@ -30,17 +30,52 @@ impl Event {
 }
 
 impl Stream {
-    /// Default constructor
+    /// Creates a new empty `Stream` with no events.
+    ///
+    /// # Examples
+    ///
+    /// Basic usage:
+    ///
+    /// ```
+    /// use mumuse::music::stream::Stream;
+    /// let s = Stream::new(); 
+    /// ```
     pub fn new() -> Self {
         Self { events: vec![] }
     }
 
     /// Adds event to stream
+    ///
+    /// # Examples
+    ///
+    /// Basic usage:
+    ///
+    /// ```
+    /// use mumuse::music::{time::Time, note::Note, stream::{Stream, Event}};
+    /// use mumuse::messages::Status;
+    /// let mut stream: Stream = Stream::new();
+    /// let time: Time = Time::new(1, 16, 1);
+    /// let note: Note = Note::try_from("A3").unwrap();
+    /// stream.add_event(Event::new(time, Status::NoteOn, note));
+    /// ```
     pub fn add_event(&mut self, event: Event) {
         self.events.push(event);
     }
 
     /// Adds note to stream
+    ///
+    /// # Examples
+    ///
+    /// Basic usage:
+    ///
+    /// ```
+    /// use mumuse::music::{time::Time, note::Note, stream::Stream, duration::Duration};
+    /// let mut stream: Stream = Stream::new();
+    /// let note: Note = Note::try_from("A3").unwrap();
+    /// let time: Time = Time::new(1, 16, 1);
+    /// let duration: Duration = Duration::new(16, 1);
+    /// stream.add_note(note, time, duration);
+    /// ```
     pub fn add_note(&mut self, note: Note, time: Time, duration: Duration) {
         println!("{:?} + {:?} = {:?}", time, duration, time + duration);
         self.events.push(Event::new(time, Status::NoteOn, note));
@@ -49,6 +84,23 @@ impl Stream {
     }
 
     /// Converts Events to seconds timeline
+    ///
+    /// In order to convert the stream with `Time` events, one need to declare a `bpm`
+    /// (beats per minutes) and a `bpb` (beats per bar).
+    ///
+    /// # Examples
+    ///
+    /// Basic usage:
+    ///
+    /// ```
+    /// use mumuse::music::{time::Time, note::Note, stream::Stream, duration::Duration};
+    /// let mut stream: Stream = Stream::new();
+    /// let note: Note = Note::try_from("A3").unwrap();
+    /// let time: Time = Time::new(1, 16, 1);
+    /// let duration: Duration = Duration::new(16, 1);
+    /// stream.add_note(note, time, duration);
+    /// let stream_seconds = stream.to_seconds(120.0, 4);
+    /// ```
     pub fn to_seconds(&self, bpm: f64, bpb: u32) -> Vec<(f64, Status, Note)> {
         let mut events_seconds: Vec<(f64, Status, Note)> = vec![];
         for event in self.events.iter() {
@@ -60,6 +112,12 @@ impl Stream {
     }
 
     /// Plays stream of events in real time
+    ///
+    /// Use ticking for playing the stream of events at regular intervals.
+    /// For each tick, the events with Time to seconds lying in the tick window are
+    /// sent as MIDI. 
+    /// The `bpm` (beats per minutes) and `bpb` (beats per bar) are needed for the conversion
+    /// to seconds.
     #[tokio::main]
     pub async fn play(&self, conn_out: &mut MidiOutputConnection, bpm: f64, bpb: u32) {
         let events_seconds = self.to_seconds(bpm, bpb); // Vector of events with seconds unit
